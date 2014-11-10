@@ -6,7 +6,7 @@
 @model Collection<ApiDescription>
 
 @{
-    ViewBag.Title = "ASP.NET Web API Help Page";
+    ViewBag.Title = "Ant Game API Specification";
 
     // Group APIs by controller
     ILookup<HttpControllerDescriptor, ApiDescription> apiGroups = Model.ToLookup(api => api.ActionDescriptor.ControllerDescriptor);
@@ -21,14 +21,7 @@
     </div>
 </header>
 <div id="body" class="help-page">
-    <section class="featured">
-        <div class="content-wrapper">
-            <h2>Introduction</h2>
-            <p>
-                Provide a general description of your APIs here.
-            </p>
-        </div>
-    </section>
+    
     <section class="content-wrapper main-content clear-fix">
         @foreach (var group in apiGroups)
         {

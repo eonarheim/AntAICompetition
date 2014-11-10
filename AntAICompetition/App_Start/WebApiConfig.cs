@@ -15,9 +15,9 @@ namespace AntAICompetition
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
-                name: "DefaultApi",
-                routeTemplate: "api/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional }
+                name: "GameApi",
+                routeTemplate: "api/{controller}/{id}/{action}/{authToken}",
+                defaults: new { id = RouteParameter.Optional , authToken = RouteParameter.Optional}
             );
         }
     }
