@@ -6,6 +6,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using AntAICompetition.Server;
 
 namespace AntAICompetition
 {
@@ -18,6 +19,8 @@ namespace AntAICompetition
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
+
+            var game = new Game();
         }
     }
 }

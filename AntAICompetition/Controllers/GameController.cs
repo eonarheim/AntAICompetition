@@ -5,6 +5,7 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using AntAICompetition.Models;
+using AntAICompetition.Server;
 
 namespace AntAICompetition.Controllers
 {
@@ -23,6 +24,7 @@ namespace AntAICompetition.Controllers
         [Route("api/game/logon")]
         public LogonResult Logon(string agentName)
         {
+            var game = new Game();
             // todo implement logon
             return new LogonResult();
         }

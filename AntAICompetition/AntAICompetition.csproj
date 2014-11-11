@@ -161,6 +161,7 @@
     <Compile Include="Models\UpdateRequest.cs" />
     <Compile Include="Models\UpdateResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Server\Game.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
