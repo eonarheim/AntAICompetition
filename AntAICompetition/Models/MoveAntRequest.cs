@@ -8,6 +8,6 @@ namespace AntAICompetition.Models
     public class MoveAntRequest
     {
         public int AntId { get; set; }
-        public string Directions { get; set; }
+        public string Direction { get; set; }
     }
 }

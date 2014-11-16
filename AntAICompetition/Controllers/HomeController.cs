@@ -10,7 +10,7 @@ namespace AntAICompetition.Controllers
     {
         public ActionResult Index()
         {
-            ViewBag.Title = "Home Page";
+            ViewBag.Title = "Ant AI Challenge";
 
             return View();
         }

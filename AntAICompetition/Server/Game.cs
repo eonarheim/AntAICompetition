@@ -17,13 +17,24 @@ namespace AntAICompetition.Server
         private long gameTime = 0;
 
         private Timer _gameLoop;
-        private Board _board;
+        private Board _board = new Board(10, 10);
+
+        public Board Board
+        {
+            get { return _board; }
+        }
+
+        public int Id
+        {
+            get { return _id; }
+        }
 
         // Players
         private int _numPlayers = 2;
         private List<string> _players = new List<string>();
         private Dictionary<string,string> _authTokensToPlayers = new Dictionary<string, string>();
         private Dictionary<string, bool> _playersUpdatedThisTurn = new Dictionary<string, bool>(); 
+        private Dictionary<string, int> _playerFood = new Dictionary<string, int>();
 
         // Timing
         private int _turnLength;
@@ -32,9 +43,16 @@ namespace AntAICompetition.Server
 
 
         // Public Properties
+        public string Status { get; set; }
+        public string Name { get; set; }
         public List<string> Players
         {
             get { return _players; }
+        }
+
+        public int Turn
+        {
+            get { return _turn; }
         }
 
         public bool Running { get; private set; }
@@ -46,7 +64,7 @@ namespace AntAICompetition.Server
             System.Diagnostics.Debug.WriteLine("Starting game {0}...", _id);
             _gameLoop = new Timer(Tick, this, gameStartDelay, _turnLength);
             _lastTick = DateTime.Now;
-            _nextTick = _lastTick.AddMilliseconds(turnLength);
+            _nextTick = _lastTick.AddMilliseconds(_turnLength+gameStartDelay);
 
         }
 
@@ -59,13 +77,24 @@ namespace AntAICompetition.Server
             _gameLoop.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
+        public void Start()
+        {
+
+        }
+
+        public void CollectFood(string player)
+        {
+            _playerFood[player]++;
+        }
+
         /// <summary>
         /// Logs player with a certain name into the game and returns an authorization token
         /// </summary>
         /// <param name="playerName"></param>
         /// <returns></returns>
-        public string LogonPlayer(string playerName)
+        public LogonResult LogonPlayer(string playerName)
         {
+            var result = new LogonResult();
             if (!_players.Contains(playerName))
             {
                 _players.Add(playerName);
@@ -73,19 +102,25 @@ namespace AntAICompetition.Server
                 var newAuthToken = System.Guid.NewGuid().ToString();
                 _authTokensToPlayers.Add(newAuthToken, playerName);
                 _playersUpdatedThisTurn.Add(playerName, false);
-                return newAuthToken;
+                System.Diagnostics.Debug.WriteLine("Player logon [{0}]:[{1}]", playerName, newAuthToken);
+                result.AuthToken = newAuthToken;
+                result.GameStartTime = _nextTick;
             }
-
-            return "Already logged on!";
+            result.GameId = Id;
+            System.Diagnostics.Debug.WriteLine("Player {0} already logged on!", playerName);
+            return result;
         }
 
         /// <summary>
         /// Returns the time to the next turn in milliseconds
         /// </summary>
         /// <returns></returns>
-        public int TimeToNextTurn()
+        public int TimeToNextTurn
         {
-            return _nextTick.Millisecond - DateTime.Now.Millisecond;
+            get
+            {
+            return _nextTick.Millisecond - DateTime.Now.Millisecond;    
+            }
         }
 
         /// <summary>
@@ -94,16 +129,18 @@ namespace AntAICompetition.Server
         /// <param name="auth"></param>
         /// <param name="updateRequest"></param>
         /// <returns></returns>
-        public UpdateResult UpdatePlayer(string auth, UpdateRequest updateRequest)
+        public UpdateResult UpdatePlayer(UpdateRequest updateRequest)
         {
             string playerName;
-            if ((playerName = AuthorizePlayer(auth)) != null && _playersUpdatedThisTurn[playerName])
+            if ((playerName = AuthorizePlayer(updateRequest.AuthToken)) != null && _playersUpdatedThisTurn[playerName])
             {
                 // update player
+                _board.QueueUpdateForPlayer(playerName, updateRequest);
 
             }
             return new UpdateResult()
             {
+                TimeToNextTurn = TimeToNextTurn,
                 Message = "Player was already updated this turn",
                 Success = false
             };
@@ -130,7 +167,7 @@ namespace AntAICompetition.Server
             _players.ForEach(p => _playersUpdatedThisTurn[p] = false);
 
             System.Diagnostics.Debug.WriteLine("[{0}] Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick);
-            Board.Update();
+            _board.Update(this);
             
         }
 

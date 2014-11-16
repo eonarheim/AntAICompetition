@@ -14,6 +14,13 @@ namespace AntAICompetition.Controllers
     /// </summary>
     public class GameController : ApiController
     {
+        private readonly GameManager _gameManager;
+
+        public GameController(GameManager gameManager)
+        {
+            _gameManager = GameManager.Instance;
+        }
+
         /// <summary>
         /// Initiates an agent logon with the simulation server by name. Once an agent is logged on, 
         /// a logon result is returned with the id and starting time of the next game.
@@ -24,9 +31,8 @@ namespace AntAICompetition.Controllers
         [Route("api/game/logon")]
         public LogonResult Logon(string agentName)
         {
-            var game = new Game();
-            // todo implement logon
-            return new LogonResult();
+            return _gameManager.GetGame(null).LogonPlayer(agentName);
+            
         }
         /// <summary>
         /// Returns the full status for a certain game
@@ -37,8 +43,13 @@ namespace AntAICompetition.Controllers
         [Route("api/game/{id}/status")]
         public GameStatus Status(int id)
         {
-            // todo implement status
-            return new GameStatus();
+            return new GameStatus()
+            {
+                FriendlyAnts = _gameManager.GetGame(id).Board.Ants,
+                GameId = id,
+                MillisecondsUntilNextTurn = _gameManager.GetGame(id).TimeToNextTurn,
+                Turn = _gameManager.GetGame(id).Turn
+            };
         }
 
         /// <summary>
@@ -50,8 +61,11 @@ namespace AntAICompetition.Controllers
         [Route("api/game/{id}/turn")]
         public TurnStatus Turn(int id)
         {
-            // todo implement turn
-            return new TurnStatus();
+            return new TurnStatus()
+            {
+                MillisecondsUntilNextTurn = _gameManager.GetGame(id).TimeToNextTurn,
+                Turn = _gameManager.GetGame(id).Turn
+            };
         }
 
         /// <summary>
@@ -63,8 +77,7 @@ namespace AntAICompetition.Controllers
         [Route("api/game/update")]
         public UpdateResult Update(UpdateRequest updateRequest)
         {
-            // todo implement update
-            return new UpdateResult();
+            return _gameManager.GetGame(updateRequest.GameId).UpdatePlayer(updateRequest);
         }
 
 

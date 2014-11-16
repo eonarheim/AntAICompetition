@@ -515,5 +515,57 @@
             <param name="updateRequest"></param>
             <returns></returns>
         </member>
+        <member name="M:AntAICompetition.Server.Board.GetCell(System.Int32,System.Int32)">
+            <summary>
+            Gets the board cell by X and Y
+            </summary>
+            <param name="x"></param>
+            <param name="y"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntAICompetition.Server.Board.GetCell(AntAICompetition.Models.Ant)">
+            <summary>
+            Gets the board cell by the occupying ant
+            </summary>
+            <param name="ant"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntAICompetition.Server.Game.Stop">
+            <summary>
+            Stops the game
+            </summary>
+        </member>
+        <member name="M:AntAICompetition.Server.Game.LogonPlayer(System.String)">
+            <summary>
+            Logs player with a certain name into the game and returns an authorization token
+            </summary>
+            <param name="playerName"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntAICompetition.Server.Game.UpdatePlayer(AntAICompetition.Models.UpdateRequest)">
+            <summary>
+            Queues an update for a player once per turn
+            </summary>
+            <param name="auth"></param>
+            <param name="updateRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:AntAICompetition.Server.Game.Tick(System.Object)">
+            <summary>
+            Ticks the simulation forward
+            </summary>
+            <param name="stateInfo"></param>
+        </member>
+        <member name="M:AntAICompetition.Server.Game.Draw">
+            <summary>
+            Reports gamestate to clients
+            </summary>
+        </member>
+        <member name="P:AntAICompetition.Server.Game.TimeToNextTurn">
+            <summary>
+            Returns the time to the next turn in milliseconds
+            </summary>
+            <returns></returns>
+        </member>
     </members>
 </doc>
