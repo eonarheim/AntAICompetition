@@ -21,7 +21,7 @@ namespace AntAICompetition.Server
     {
         public List<Ant> Ants
         {
-            get { return Cells.Select(c => c.Ant).ToList(); }
+            get { return Cells.Where(c => c != null).Select(c => c.Ant).ToList(); }
         }
 
         private Dictionary<string, UpdateRequest> _updateList = new Dictionary<string, UpdateRequest>();

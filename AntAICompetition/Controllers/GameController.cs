@@ -28,7 +28,7 @@ namespace AntAICompetition.Controllers
         [Route("api/game")]
         public IList<Game> Get()
         {
-            return GameManager.Instance.Games.Values.ToList();
+            return _gameManager.Games.Values.ToList();
         }
 
             /// <summary>

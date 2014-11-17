@@ -1,6 +1,8 @@
-﻿<div class="row">
+﻿<h2 class="page-header">Active Games</h2>
+
+<div class="row">
     
-    <div>
+    <div class="col-xs-12">
         
         <div id="no-games" class="alert alert-warning">No games yet, plz make some...</div>
 
@@ -26,15 +28,16 @@
                     $("#no-games").show();
                 }
 
-                $.each(games, function(game) {
+                games.forEach(function(game) {
 
                     // clear
                     $("#games").empty();
 
                     // build link
-                    var $li = $("li");
-                    var $link = $("a");
+                    var $li = $("<li>");
+                    var $link = $("<a>");
                     $link.attr("href", "/game/" + game.Id);
+                    $link.text("Game " + game.Id);
                     $li.append($link);
 
                     $("#games").append($li);
