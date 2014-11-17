@@ -486,6 +486,12 @@
             Api specification for the Ant AI Simulation
             </summary>
         </member>
+        <member name="M:AntAICompetition.Controllers.GameController.Get">
+            <summary>
+            Gets the list of current games
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AntAICompetition.Controllers.GameController.Logon(System.String)">
             <summary>
             Initiates an agent logon with the simulation server by name. Once an agent is logged on, 

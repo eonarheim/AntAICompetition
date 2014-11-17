@@ -16,12 +16,22 @@ namespace AntAICompetition.Controllers
     {
         private readonly GameManager _gameManager;
 
-        public GameController(GameManager gameManager)
+        public GameController()
         {
             _gameManager = GameManager.Instance;
         }
 
         /// <summary>
+        /// Gets the list of current games
+        /// </summary>
+        /// <returns></returns>
+        [Route("api/game")]
+        public IList<Game> Get()
+        {
+            return GameManager.Instance.Games.Values.ToList();
+        }
+
+            /// <summary>
         /// Initiates an agent logon with the simulation server by name. Once an agent is logged on, 
         /// a logon result is returned with the id and starting time of the next game.
         /// </summary>

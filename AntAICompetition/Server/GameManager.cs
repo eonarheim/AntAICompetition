@@ -10,9 +10,11 @@ namespace AntAICompetition.Server
     {
         private GameManager()
         {
+            Games = new Dictionary<int, Game>();
         }
 
         private static readonly GameManager _instance = new GameManager();
+
         public Dictionary<int, Game> Games { get; set; }
 
         public Game GetGame(int? id)
