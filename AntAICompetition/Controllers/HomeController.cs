@@ -14,5 +14,10 @@ namespace AntAICompetition.Controllers
 
             return View();
         }
+
+        public ActionResult Game(int id)
+        {
+            return View(id);
+        }
     }
 }

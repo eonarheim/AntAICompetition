@@ -168,6 +168,7 @@ namespace AntAICompetition.Server
 
             System.Diagnostics.Debug.WriteLine("[{0}] Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick);
             _board.Update(this);
+            ClientManager.UpdateClientGame(this);
             
         }
 

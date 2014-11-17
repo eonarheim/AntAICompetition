@@ -530,6 +530,12 @@
             <param name="ant"></param>
             <returns></returns>
         </member>
+        <member name="M:AntAICompetition.Server.ClientManager.UpdateClientGame(AntAICompetition.Server.Game)">
+            <summary>
+            Updates the client game
+            </summary>
+            <param name="game"></param>
+        </member>
         <member name="M:AntAICompetition.Server.Game.Stop">
             <summary>
             Stops the game

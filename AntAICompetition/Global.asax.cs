@@ -19,8 +19,7 @@ namespace AntAICompetition
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-
-            var game = new Game();
+            
         }
     }
 }
