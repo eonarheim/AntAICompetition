@@ -10,6 +10,6 @@ namespace SampleAgent
     {
         public string AuthToken { get; set; }
         public int GameId { get; set; }
-        public List<MoveRequest> MoveRequests { get; set; }
+        public List<MoveAntRequest> MoveAntRequests { get; set; }
     }
 }

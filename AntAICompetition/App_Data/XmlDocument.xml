@@ -492,7 +492,7 @@
             </summary>
             <returns></returns>
         </member>
-        <member name="M:AntAICompetition.Controllers.GameController.Logon(System.String)">
+        <member name="M:AntAICompetition.Controllers.GameController.Logon(AntAICompetition.Models.LogonRequest)">
             <summary>
             Initiates an agent logon with the simulation server by name. Once an agent is logged on, 
             a logon result is returned with the id and starting time of the next game.

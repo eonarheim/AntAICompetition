@@ -39,9 +39,9 @@ namespace AntAICompetition.Controllers
         /// <returns>LogonResult</returns>
         [HttpPost]
         [Route("api/game/logon")]
-        public LogonResult Logon(string agentName)
+        public LogonResult Logon(LogonRequest logon)
         {
-            return _gameManager.GetGame(null).LogonPlayer(agentName);
+            return _gameManager.GetGame(null).LogonPlayer(logon.AgentName);
             
         }
         /// <summary>
@@ -92,7 +92,11 @@ namespace AntAICompetition.Controllers
         [Route("api/game/update")]
         public UpdateResult Update(UpdateRequest updateRequest)
         {
-            return _gameManager.GetGame(updateRequest.GameId).UpdatePlayer(updateRequest);
+            if (updateRequest != null && updateRequest.MoveAntRequests != null)
+            {
+                return _gameManager.GetGame(updateRequest.GameId).UpdatePlayer(updateRequest);
+            }
+            return null;
         }
 
 

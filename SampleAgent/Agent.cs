@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,19 +25,24 @@ namespace SampleAgent
         private bool _isRunning = false;
         private readonly HttpClient _client = null;
 
+        private Random rng = new Random(DateTime.Now.Millisecond);
+
         public Agent(string name)
         {
             Name = name;
             // connect to api
-            _client = new HttpClient {BaseAddress = new Uri("http://localhost:16901")};
+            _client = new HttpClient {BaseAddress = new Uri("http://localhost:16901/")};
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            Ants = new List<Ant>();
+            EnemyAnts = new List<Ant>();
             
         }
 
         private async Task<LogonResult> Logon()
         {
-            var response = await _client.PostAsync(string.Format("api/game/logon?agentName={0}", Name), null);
+            var response = await _client.PostAsJsonAsync("api/game/logon", new LogonRequest(){AgentName = Name});
             var result = await response.Content.ReadAsAsync<LogonResult>();
             AuthToken = result.AuthToken;
             GameId = result.GameId;
@@ -45,7 +51,7 @@ namespace SampleAgent
 
         
 
-        private async void UpdateGameState()
+        private async Task<GameStatus> UpdateGameState()
         {
             var response = await _client.PostAsync(string.Format("api/game/{0}/status/{1}", GameId, AuthToken), null);
             var result = await response.Content.ReadAsAsync<GameStatus>();
@@ -54,42 +60,45 @@ namespace SampleAgent
             Ants = result.FriendlyAnts;
             EnemyAnts = result.EnemyAnts;
             TimeToNextTurn = result.MillisecondsUntilNextTurn;
+            return result;
         }
 
-        private async void SendUpdate(List<MoveRequest> moveRequests)
+        private async Task<UpdateResult> SendUpdate(List<MoveAntRequest> moveRequests)
         {
             var response = await _client.PostAsJsonAsync("api/game/update", new UpdateRequest()
-                                                                            {
-                                                                                AuthToken = AuthToken,
-                                                                                GameId = GameId,
-                                                                                MoveRequests = moveRequests
-                                                                            });
+                                                                      {
+                                                                          AuthToken = AuthToken,
+                                                                          GameId = GameId,
+                                                                          MoveAntRequests = moveRequests
+                                                                      });
             var result = await response.Content.ReadAsAsync<UpdateResult>();
+            return result;
         }
 
        
-        public MoveRequest MoveAnt(Ant ant)
+        public MoveAntRequest MoveAnt(Ant ant)
         {
-            var directionId = new Random().Next(0, 4);
-            return new MoveRequest(){AntId = ant.Id, Direction = Directions[directionId]};
+            var directionId = rng.Next(0, 4);
+            return new MoveAntRequest(){AntId = ant.Id, Direction = Directions[directionId]};
         }
 
         public void Update()
         {
-            UpdateGameState();
-            SendUpdate(Ants.Select(MoveAnt).ToList());
+            UpdateGameState().Wait();
+            Console.WriteLine("Ants to update " + Ants.Count);
+            SendUpdate(Ants.Select(MoveAnt).ToList()).Wait();
         }
 
-        public async void Start()
+        public void Start()
         {
-            await Logon();
+            Logon().Wait();
             if (!_isRunning)
             {
                 _isRunning = true;
                 while (_isRunning)
                 {
                     Update();
-                    Thread.Sleep((int)(TimeToNextTurn - 200));
+                    Thread.Sleep((int)(TimeToNextTurn));
                 }
             }
         }

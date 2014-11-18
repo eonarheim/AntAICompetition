@@ -84,10 +84,10 @@ namespace AntAICompetition.Server
         public void Update(Game game)
         {
             // Get new player updates
-            var upates = _updateList.Values.Where(v => v != null);
-
-            upates.SelectMany(u => u.MoveAntRequests).ForEach(u => MoveAnt(game, u.AntId, u.Direction));
-
+            var updates = _updateList.Values.Where(v => v != null);
+            
+            updates.SelectMany(u => u.MoveAntRequests).ForEach(u => MoveAnt(game, u.AntId, u.Direction));
+            
             SpawnFood();
             
             // Clear updates

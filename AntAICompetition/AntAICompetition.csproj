@@ -178,6 +178,7 @@
     <Compile Include="Hubs\AntsHub.cs" />
     <Compile Include="Models\Ant.cs" />
     <Compile Include="Models\GameStatus.cs" />
+    <Compile Include="Models\LogonRequest.cs" />
     <Compile Include="Models\LogonResult.cs" />
     <Compile Include="Models\MoveAntRequest.cs" />
     <Compile Include="Models\TurnStatus.cs" />

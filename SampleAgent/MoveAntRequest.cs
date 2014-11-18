@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SampleAgent
 {
     
-    public class MoveRequest
+    public class MoveAntRequest
     {
         public int AntId { get; set; }
         // possible directions are up, down, left, and right
