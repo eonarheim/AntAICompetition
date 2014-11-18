@@ -10,6 +10,8 @@ namespace SampleAgent
     {
         static void Main(string[] args)
         {
+            var agent = new Agent("RandomWalkAgent");
+            agent.Start();
         }
     }
 }
