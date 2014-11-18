@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Game @Model</h2>
+<h2>Game @Model <small>Turn <span id="turn"></span></small></h2>
 
 <div class="row">
     
@@ -61,7 +61,8 @@
                     $("#players").append("<li id='player-" + idx + "'><span class='ant-progress'></span>" + player + "<span class='ants' id='player-" + idx + "-ants'>0</span></li>");
                 });
             }
-            
+
+            $("#turn").text(game.Turn);
             $("#status").text(game.Status || "Unknown");
 
             // update players
