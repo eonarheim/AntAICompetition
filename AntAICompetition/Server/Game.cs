@@ -82,9 +82,9 @@ namespace AntAICompetition.Server
 
         }
 
-        public void CollectFood(string player)
+        public void CollectFood(string player, int amount = 1)
         {
-            _playerFood[player]++;
+            _playerFood[player]+= amount;
         }
 
         /// <summary>
@@ -105,6 +105,8 @@ namespace AntAICompetition.Server
                 System.Diagnostics.Debug.WriteLine("Player logon [{0}]:[{1}]", playerName, newAuthToken);
                 result.AuthToken = newAuthToken;
                 result.GameStartTime = _nextTick;
+                _board.BuildHill(3, 3, playerName);
+                CollectFood(playerName, 3);
             }
             result.GameId = Id;
             System.Diagnostics.Debug.WriteLine("Player {0} already logged on!", playerName);
@@ -165,6 +167,14 @@ namespace AntAICompetition.Server
             _lastTick = _nextTick;
             _nextTick = DateTime.Now.AddMilliseconds(_turnLength);
             _players.ForEach(p => _playersUpdatedThisTurn[p] = false);
+            foreach (var player in _players)
+            {
+                if (_playerFood[player] > 0)
+                {
+                    _playerFood[player]--;
+                    _board.SpawnAnt(player);
+                }
+            }
 
             System.Diagnostics.Debug.WriteLine("[{0}] Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick);
             _board.Update(this);

@@ -32,6 +32,8 @@ namespace AntAICompetition.Server
 
         public int FogOfWar { get; set; }
 
+        public Dictionary<string, Hill> Hills = new Dictionary<string, Hill>();
+
         public Board(int width, int height, string mapFile = "~/App_Data/default.map")
         {
             // todo load the map file
@@ -67,24 +69,46 @@ namespace AntAICompetition.Server
 
         public void Update(Game game)
         {
-            // Get new updates
+            // Get new player updates
             var upates = _updateList.Values.Where(v => v != null);
 
             upates.SelectMany(u => u.MoveAntRequests).ForEach(u => MoveAnt(game, u.AntId, u.Direction));
+
+            SpawnFood();
             
             // Clear updates
             _updateList.Keys.ForEach(k => _updateList[k] = null);
         }
 
-        public void SpawnAnt(int x, int y, string player)
+        public void BuildHill(int x, int y, string player)
         {
-            GetCell(x, y).Ant = new Ant()
+            GetCell(x, y).Type = CellType.Hill;
+            Hills.Add(player, new Hill()
+                              {
+                                  Owner = player,
+                                  X = x,
+                                  Y = y
+                              });
+        }
+
+        public void SpawnAnt(string player)
+        {
+            var hill = Hills[player];
+            GetCell(hill.X, hill.Y).Ant = new Ant()
             {
                 Id = 0,
                 Owner = player,
-                X = x,
-                Y = y
+                X = hill.X,
+                Y = hill.Y
             };
+        }
+
+        public void SpawnFood()
+        {
+            var rng = new Random(DateTime.Now.Millisecond);
+            var x = rng.Next(0, Width);
+            var y = rng.Next(0, Height);
+            GetCell(x, y).Type = CellType.Food;
         }
 
         private void MoveAnt(Game game, int antId, string direction)

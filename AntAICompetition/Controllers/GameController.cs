@@ -16,7 +16,7 @@ namespace AntAICompetition.Controllers
     {
         private readonly GameManager _gameManager;
 
-        public GameController(GameManager gameManager)
+        public GameController()
         {
             _gameManager = GameManager.Instance;
         }

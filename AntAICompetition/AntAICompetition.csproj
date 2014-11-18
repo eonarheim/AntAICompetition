@@ -189,6 +189,7 @@
     <Compile Include="Server\ClientManager.cs" />
     <Compile Include="Server\Game.cs" />
     <Compile Include="Server\GameManager.cs" />
+    <Compile Include="Server\Hill.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
