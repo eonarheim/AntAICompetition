@@ -41,17 +41,18 @@ textarea {
     float: right;
 }
 
-#players .progress {
+#players .ant-progress {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
+    z-index: -1;
 }
 
 #players #player-0 { border-color: red; }
 #players #player-1 { border-color: blue; }
-#players #player-0 .progress { background: red; }
-#players #player-1 .progress { background: blue; }
+#players #player-0 .ant-progress { background: red; }
+#players #player-1 .ant-progress { background: blue; }
 
 /******* Board **********/
 #board {

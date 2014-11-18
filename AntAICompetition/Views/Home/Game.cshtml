@@ -58,7 +58,7 @@
                 }
 
                 game.Players.forEach(function(player, idx) {
-                    $("#players").append("<li id='player-" + idx + "'>" + player + "<span class='progress'></span><span class='ants' id='player-" + idx + "-ants'>0</span></li>");
+                    $("#players").append("<li id='player-" + idx + "'><span class='ant-progress'></span>" + player + "<span class='ants' id='player-" + idx + "-ants'>0</span></li>");
                 });
             }
             
@@ -69,13 +69,11 @@
                 var ants = game.Board.Ants.filter(function(ant) { return ant.Owner === player; });
 
                 $("#player-" + idx + "-ants").text(ants.length);
-                $("#player-" + idx).find(".progress").css({ width: ((ants / game.Board.Ants.length) * 100).toString() + "%" });
+                $("#player-" + idx).find(".ant-progress").css({ width: ((ants.length / game.Board.Ants.length) * 100).toString() + "%" });
             });
 
             // update cells
             game.Board.Cells.forEach(function(cell) {
-                if (!cell) return;
-
                 var $td = $("#board tr").eq(cell.Y).find("td").eq(cell.X);
                 $td.prop("class", "");
 
