@@ -486,6 +486,12 @@
             Api specification for the Ant AI Simulation
             </summary>
         </member>
+        <member name="M:AntAICompetition.Controllers.GameController.Get">
+            <summary>
+            Gets the list of current games
+            </summary>
+            <returns></returns>
+        </member>
         <member name="M:AntAICompetition.Controllers.GameController.Logon(System.String)">
             <summary>
             Initiates an agent logon with the simulation server by name. Once an agent is logged on, 
@@ -514,6 +520,12 @@
             </summary>
             <param name="updateRequest"></param>
             <returns></returns>
+        </member>
+        <member name="M:AntAICompetition.Hubs.AntsHub.Listen(System.Int32)">
+            <summary>
+            Client asks to listen to game so add them to the Game{Id} group
+            </summary>
+            <param name="gameId"></param>
         </member>
         <member name="M:AntAICompetition.Server.Board.GetCell(System.Int32,System.Int32)">
             <summary>

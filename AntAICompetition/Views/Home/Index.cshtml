@@ -1,24 +1,57 @@
-﻿<div class="jumbotron">
-    <h1>Ant AI Challenge</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS, and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+﻿<h2 class="page-header">Active Games</h2>
+
 <div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>ASP.NET Web API is a framework that makes it easy to build HTTP services that reach
-        a broad range of clients, including browsers and mobile devices. ASP.NET Web API
-        is an ideal platform for building RESTful applications on the .NET Framework.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301870">Learn more &raquo;</a></p>
+    
+    <div class="col-xs-12">
+        
+        <div id="no-games" class="alert alert-warning">No games yet, plz make some...</div>
+
+        <ul id="games">
+            
+        </ul>
+        
+        
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301871">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301872">Learn more &raquo;</a></p>
-    </div>
+
 </div>
+
+@section scripts {
+    
+    <script type="text/javascript">
+
+        var refreshGames = function() {
+            $.getJSON("/api/game").then(function (games) {
+
+                if (games.length) {
+                    $("#no-games").hide();
+                } else {
+                    $("#no-games").show();
+                }
+
+                games.forEach(function(game) {
+
+                    // clear
+                    $("#games").empty();
+
+                    // build link
+                    var $li = $("<li>");
+                    var $link = $("<a>");
+                    $link.attr("href", "/home/game/" + game.Id);
+                    $link.text("Game " + game.Id);
+                    $li.append($link);
+
+                    $("#games").append($li);
+                });
+            });
+        };
+
+        $(function() {
+
+            refreshGames();
+            setInterval(refreshGames, 2000);
+
+        });
+
+    </script>
+
+}
