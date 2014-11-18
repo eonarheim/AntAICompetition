@@ -15,7 +15,7 @@ namespace AntAICompetition.Server
         /// <param name="game"></param>
         public static void UpdateClientGame(Game game)
         {
-            GetHubContext().Clients.Group("game"+game.Id).udpate(game);
+            GetHubContext().Clients.Group("game" + game.Id).update(game);
         }
 
         public static IHubContext GetHubContext()

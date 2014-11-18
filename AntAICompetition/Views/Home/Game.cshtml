@@ -1,59 +1,44 @@
-﻿@model AntAICompetition.Server.Game
+﻿@model int
 
 @{
     ViewBag.Title = "Game";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Game</h2>
+<h2>Game @Model</h2>
 
-<div>
-    <h4>Game</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Status)
-        </dt>
+<div class="row">
+    
+    <div class="col-xs-12">
+        
+        
 
-        <dd>
-            @Html.DisplayFor(model => model.Status)
-        </dd>
+    </div>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Turn)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Turn)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Running)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Running)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TimeToNextTurn)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TimeToNextTurn)
-        </dd>
-
-    </dl>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+@section scripts {
+    <script src="/Scripts/jquery.signalR-2.1.2.min.js"></script>
+    <script src="@Url.Content("~/signalr/hubs")"></script>
+    <script type="text/javascript">
+
+        var antsHub = $.connection.antsHub;
+
+        antsHub.client.update = function(game) {
+            console.log("Received game update", game);
+        };
+
+        $.connection.hub.start().done(function() {
+            console.log("Connected to AntsHub");
+
+            // subscribe to game updates
+            antsHub.server.listen(@Model);
+
+            console.log("Listening to game", @Model);
+        });
+        
+
+
+    </script>
+
+}
