@@ -11,13 +11,9 @@
     
     <div class="col-md-2">
         
-        <dl>
-            <dt>Players</dt>
-            <dd id="players">None</dd>
-            
-            <dt>Ants</dt>
-            <dd id="ants">0</dd>
-            
+        <ul id="players"></ul>
+
+        <dl>                       
             <dt>Status</dt>
             <dd id="status">Unknown</dd>
         </dl>
@@ -60,11 +56,21 @@
                     }
                     $("#board").append($row);
                 }
-            }
 
-            $("#players").text(game.Players.join(", "));
-            $("#ants").text(game.Board.Ants.length);
+                game.Players.forEach(function(player, idx) {
+                    $("#players").append("<li id='player-" + idx + "'>" + player + "<span class='progress'></span><span class='ants' id='player-" + idx + "-ants'>0</span></li>");
+                });
+            }
+            
             $("#status").text(game.Status || "Unknown");
+
+            // update players
+            game.Players.forEach(function(player, idx) {
+                var ants = game.Board.Ants.filter(function(ant) { return ant.Owner === player; });
+
+                $("#player-" + idx + "-ants").text(ants.length);
+                $("#player-" + idx).find(".progress").css({ width: ((ants / game.Board.Ants.length) * 100).toString() + "%" });
+            });
 
             // update cells
             game.Board.Cells.forEach(function(cell) {

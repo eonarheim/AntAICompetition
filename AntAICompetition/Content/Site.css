@@ -16,6 +16,43 @@ textarea {
     max-width: 280px;
 }
 
+/******* Players ********/
+#players {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#players li {
+    width: 90%;
+    height: 25px;
+    color: black;
+    font-size: 1em;
+    position: relative;
+    border: 1px solid black;
+    margin-bottom: 0.5em;
+    padding: 3px;
+}
+
+#players li .ants {
+    font-weight: bold;
+    font-size: 0.8em;
+    line-height: 1.5em;
+    float: right;
+}
+
+#players .progress {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+}
+
+#players #player-0 { border-color: red; }
+#players #player-1 { border-color: blue; }
+#players #player-0 .progress { background: red; }
+#players #player-1 .progress { background: blue; }
+
 /******* Board **********/
 #board {
     border: 3px solid black;
