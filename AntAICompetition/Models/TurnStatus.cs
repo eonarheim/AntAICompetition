@@ -8,6 +8,6 @@ namespace AntAICompetition.Models
     public class TurnStatus
     {
         public int Turn { get; set; }
-        public int MillisecondsUntilNextTurn { get; set; }
+        public long MillisecondsUntilNextTurn { get; set; }
     }
 }

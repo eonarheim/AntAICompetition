@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -24,7 +25,7 @@ namespace AntAICompetition.Server
             get { return Cells.Where(c => c.Ant != null).Select(c => c.Ant).ToList(); }
         }
 
-        private Dictionary<string, UpdateRequest> _updateList = new Dictionary<string, UpdateRequest>();
+        private ConcurrentDictionary<string, UpdateRequest> _updateList = new ConcurrentDictionary<string, UpdateRequest>();
 
         public int Width { get; private set; }
         public int Height { get; private set; }
@@ -104,6 +105,12 @@ namespace AntAICompetition.Server
                               });
         }
 
+        public bool CanSpawnAnt(string player)
+        {
+            var hill = Hills[player];
+            return GetCell(hill.X, hill.Y).Ant == null;
+        }
+
         public void SpawnAnt(string player)
         {
             var hill = Hills[player];
@@ -132,19 +139,19 @@ namespace AntAICompetition.Server
                 var newY = ant.Y;
                 if (direction == "up")
                 {
-                    newY = ant.Y-1;
+                    newY = (Height + ant.Y-1)%Height;
                 }
                 else if (direction == "down")
                 {
-                    newY = ant.Y+1;
+                    newY = (Height + ant.Y+1)%Height;
                 }
                 else if (direction == "left")
                 {
-                    newX = ant.X-1;
+                    newX = (Width + ant.X-1)%Width;
                 }
                 else if (direction == "right")
                 {
-                    newX =ant.X+1;
+                    newX = (Width + ant.X+1)%Width;
                 }
                 var potentialCell = GetCell(newX, newY);
                 if (potentialCell.Ant != null && ant.Owner != potentialCell.Ant.Owner)
@@ -187,7 +194,7 @@ namespace AntAICompetition.Server
             // todo why do I tend to solve problems with dictionaries, maybe too much javascript :P
             if (!_updateList.ContainsKey(playeName))
             {
-                _updateList.Add(playeName, updateRequest);
+                _updateList.TryAdd(playeName, updateRequest);
             }
             _updateList[playeName] = updateRequest;
         }

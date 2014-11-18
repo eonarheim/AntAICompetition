@@ -500,7 +500,7 @@
             <param name="agentName"></param>
             <returns>LogonResult</returns>
         </member>
-        <member name="M:AntAICompetition.Controllers.GameController.Status(System.Int32)">
+        <member name="M:AntAICompetition.Controllers.GameController.Status(System.Int32,System.String)">
             <summary>
             Returns the full status for a certain game
             </summary>
@@ -573,11 +573,6 @@
             Ticks the simulation forward
             </summary>
             <param name="stateInfo"></param>
-        </member>
-        <member name="M:AntAICompetition.Server.Game.Draw">
-            <summary>
-            Reports gamestate to clients
-            </summary>
         </member>
         <member name="P:AntAICompetition.Server.Game.TimeToNextTurn">
             <summary>

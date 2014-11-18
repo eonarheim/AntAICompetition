@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -17,7 +18,7 @@ namespace AntAICompetition.Server
         private long gameTime = 0;
 
         private Timer _gameLoop;
-        private Board _board = new Board(10, 10);
+        private Board _board = new Board(30, 30);
 
         public Board Board
         {
@@ -32,9 +33,9 @@ namespace AntAICompetition.Server
         // Players
         private int _numPlayers = 2;
         private List<string> _players = new List<string>();
-        private Dictionary<string,string> _authTokensToPlayers = new Dictionary<string, string>();
-        private Dictionary<string, bool> _playersUpdatedThisTurn = new Dictionary<string, bool>(); 
-        private Dictionary<string, int> _playerFood = new Dictionary<string, int>();
+        private ConcurrentDictionary<string,string> _authTokensToPlayers = new ConcurrentDictionary<string, string>();
+        private ConcurrentDictionary<string, bool> _playersUpdatedThisTurn = new ConcurrentDictionary<string, bool>();
+        private ConcurrentDictionary<string, int> _playerFood = new ConcurrentDictionary<string, int>();
 
         // Timing
         private int _turnLength;
@@ -57,7 +58,7 @@ namespace AntAICompetition.Server
 
         public bool Running { get; private set; }
 
-        public Game(int gameStartDelay = 10000, int turnLength = 3000, int numPlayers = 2)
+        public Game(int gameStartDelay = 10000, int turnLength = 2000, int numPlayers = 2)
         {
             _numPlayers = numPlayers;
             _turnLength = turnLength;
@@ -66,6 +67,32 @@ namespace AntAICompetition.Server
             _lastTick = DateTime.Now;
             _nextTick = _lastTick.AddMilliseconds(_turnLength+gameStartDelay);
 
+        }
+
+        public Hill GetHillFromToken(string authToken)
+        {
+            var player = GetPlayerFromToken(authToken);
+            return _board.Hills[player];
+        }
+
+        public int GetFoodFromToken(string authToken)
+        {
+            var result = 0;
+            var player = GetPlayerFromToken(authToken);
+            if (_playerFood.TryGetValue(player, out result))
+            {
+                return result;
+            }
+            return 0;
+        }
+        public string GetPlayerFromToken(string authToken)
+        {
+            var result = "";
+            if (_authTokensToPlayers.TryGetValue(authToken, out result))
+            {
+                return result;
+            }
+            return null;
         }
 
         /// <summary>
@@ -100,9 +127,9 @@ namespace AntAICompetition.Server
                 _players.Add(playerName);
                 // I know guids are not crypto secure, for this game I don't think it matters
                 var newAuthToken = System.Guid.NewGuid().ToString();
-                _authTokensToPlayers.Add(newAuthToken, playerName);
-                _playersUpdatedThisTurn.Add(playerName, false);
-                _playerFood.Add(playerName, 0);
+                _authTokensToPlayers.TryAdd(newAuthToken, playerName);
+                _playersUpdatedThisTurn.TryAdd(playerName, false);
+                _playerFood.TryAdd(playerName, 0);
 
                 System.Diagnostics.Debug.WriteLine("Player logon [{0}]:[{1}]", playerName, newAuthToken);
                 result.AuthToken = newAuthToken;
@@ -120,12 +147,9 @@ namespace AntAICompetition.Server
         /// Returns the time to the next turn in milliseconds
         /// </summary>
         /// <returns></returns>
-        public int TimeToNextTurn
+        public long TimeToNextTurn
         {
-            get
-            {
-            return _nextTick.Millisecond - DateTime.Now.Millisecond;    
-            }
+            get { return (long) (_nextTick - DateTime.Now).TotalMilliseconds; }
         }
 
         /// <summary>
@@ -177,7 +201,7 @@ namespace AntAICompetition.Server
             _players.ForEach(p => _playersUpdatedThisTurn[p] = false);
             foreach (var player in _players)
             {
-                if (_playerFood[player] > 0)
+                if (_playerFood[player] > 0 && _board.CanSpawnAnt(player))
                 {
                     _playerFood[player]--;
                     _board.SpawnAnt(player);
@@ -190,12 +214,5 @@ namespace AntAICompetition.Server
             
         }
 
-        /// <summary>
-        /// Reports gamestate to clients
-        /// </summary>
-        public void Draw()
-        {
-            // todo call signal updater
-        }
     }
 }

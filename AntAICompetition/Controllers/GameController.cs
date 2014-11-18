@@ -49,16 +49,21 @@ namespace AntAICompetition.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet]
-        [Route("api/game/{id}/status")]
-        public GameStatus Status(int id)
+        [HttpPost]
+        [Route("api/game/{id}/status/{authToken}")]
+        public GameStatus Status(int id, string authToken)
         {
+            var game = _gameManager.GetGame(id);
             return new GameStatus()
             {
-                FriendlyAnts = _gameManager.GetGame(id).Board.Ants,
+                Hill = game.GetHillFromToken(authToken),
+                Food = game.GetFoodFromToken(authToken),
+                FriendlyAnts = game.Board.Ants.Where(a => a.Owner == game.GetPlayerFromToken(authToken)).ToList(),
+                // todo refine this by fog of war
+                EnemyAnts = game.Board.Ants.Where(a => a.Owner != game.GetPlayerFromToken(authToken)).ToList(),
                 GameId = id,
-                MillisecondsUntilNextTurn = _gameManager.GetGame(id).TimeToNextTurn,
-                Turn = _gameManager.GetGame(id).Turn
+                MillisecondsUntilNextTurn = game.TimeToNextTurn,
+                Turn = game.Turn
             };
         }
 

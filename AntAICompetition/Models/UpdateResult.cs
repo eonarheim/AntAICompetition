@@ -7,7 +7,7 @@ namespace AntAICompetition.Models
 {
     public class UpdateResult
     {
-        public int TimeToNextTurn { get; set; }
+        public long TimeToNextTurn { get; set; }
         public string Message { get; set; }
         public bool Success { get; set; }
         public List<string> ErrorList { get; set; }
