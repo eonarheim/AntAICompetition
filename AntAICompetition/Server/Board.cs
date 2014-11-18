@@ -109,7 +109,6 @@ namespace AntAICompetition.Server
             var hill = Hills[player];
             GetCell(hill.X, hill.Y).Ant = new Ant()
             {
-                Id = 0,
                 Owner = player,
                 X = hill.X,
                 Y = hill.Y
