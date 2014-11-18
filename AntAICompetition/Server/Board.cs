@@ -90,7 +90,7 @@ namespace AntAICompetition.Server
             SpawnFood();
             
             // Clear updates
-            _updateList.Keys.ForEach(k => _updateList[k] = null);
+            _updateList.Clear();
         }
 
         public void BuildHill(int x, int y, string player)
@@ -167,8 +167,10 @@ namespace AntAICompetition.Server
                 if (potentialCell.Type == CellType.Space || potentialCell.Type == CellType.Hill)
                 {
                     //todo implement win condition when an ant steps on an enemy hill
+                    GetCell(ant.X, ant.Y).Ant = null;
                     ant.X = newX;
                     ant.Y = newY;
+                    GetCell(newX, newY).Ant = ant;
                 }
 
             }

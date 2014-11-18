@@ -137,10 +137,15 @@ namespace AntAICompetition.Server
         public UpdateResult UpdatePlayer(UpdateRequest updateRequest)
         {
             string playerName;
-            if ((playerName = AuthorizePlayer(updateRequest.AuthToken)) != null && _playersUpdatedThisTurn[playerName])
+            if ((playerName = AuthorizePlayer(updateRequest.AuthToken)) != null && !_playersUpdatedThisTurn[playerName])
             {
                 // update player
                 _board.QueueUpdateForPlayer(playerName, updateRequest);
+                return new UpdateResult()
+                       {
+                           TimeToNextTurn = TimeToNextTurn,
+                           Success = true
+                       };
 
             }
             return new UpdateResult()
