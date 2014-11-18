@@ -9,9 +9,26 @@
 
 <div class="row">
     
-    <div class="col-xs-12">
+    <div class="col-md-2">
         
+        <dl>
+            <dt>Players</dt>
+            <dd id="players">None</dd>
+            
+            <dt>Ants</dt>
+            <dd id="ants">0</dd>
+            
+            <dt>Status</dt>
+            <dd id="status">Unknown</dd>
+        </dl>
+
+    </div>
+
+    <div class="col-md-10">
         
+        <table id="board">
+            
+        </table>
 
     </div>
 
@@ -23,9 +40,58 @@
     <script type="text/javascript">
 
         var antsHub = $.connection.antsHub;
+        var initialized = false;
 
         antsHub.client.update = function(game) {
             console.log("Received game update", game);
+
+            if (!initialized) {
+                initialized = true;
+
+                var width = game.Board.Width;
+                var height = game.Board.Height;
+                var col, row, $row;
+
+                for (row = 0; row < height; row++) {
+                    $row = $("<tr></tr>");
+
+                    for (col = 0; col < width; col++) {
+                        $row.append("<td></td>");
+                    }
+                    $("#board").append($row);
+                }
+            }
+
+            $("#players").text(game.Players.join(", "));
+            $("#ants").text(game.Board.Ants.length);
+            $("#status").text(game.Status || "Unknown");
+
+            // update cells
+            game.Board.Cells.forEach(function(cell) {
+                if (!cell) return;
+
+                var $td = $("#board tr").eq(cell.Y).find("td").eq(cell.X);
+                $td.prop("class", "");
+
+                if (!cell.Ant) {
+                    switch (cell.Type) {
+                    case "Space":
+                        $td.addClass("space");
+                        break;
+                    case "Wall":
+                        $td.addClass("wall");
+                        break;
+                    case "Food":
+                        $td.addClass("food");
+                        break;
+                    case "Hill":
+                        $td.addClass("hill");
+                        break;
+                    }
+                } else {
+                    $td.addClass("ant player-" + game.Players.indexOf(cell.Ant.Owner));
+                }
+            });
         };
 
         $.connection.hub.start().done(function() {
@@ -36,7 +102,6 @@
 
             console.log("Listening to game", @Model);
         });
-        
 
 
     </script>
