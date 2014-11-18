@@ -15,3 +15,42 @@ select,
 textarea {
     max-width: 280px;
 }
+
+/******* Board **********/
+#board {
+    border: 3px solid black;
+}
+
+#board td {
+    width: 10px;
+    height: 10px;
+    border: 1px solid black;
+}
+
+#board td.player-0 {
+    background: red;
+}
+
+#board td.player-1 {
+    background: blue;
+}
+
+#board td.ant {
+    border-width: 2px;
+}
+
+#board td.wall {
+    background: black;
+}
+
+#board td.hill {
+    background: pink;
+}
+
+#board td.space {
+    background: white;
+}
+
+#board td.food {
+    background: green;
+}
