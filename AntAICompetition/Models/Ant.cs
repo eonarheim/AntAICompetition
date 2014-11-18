@@ -7,6 +7,13 @@ namespace AntAICompetition.Models
 {
     public class Ant
     {
+        private static int _maxId = 1;
+
+        public Ant()
+        {
+            Id = _maxId++;
+        }
+
         public int Id { get; set; }
         public int X { get; set; }
         public int Y { get; set; }

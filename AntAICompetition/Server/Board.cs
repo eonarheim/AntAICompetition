@@ -21,7 +21,7 @@ namespace AntAICompetition.Server
     {
         public List<Ant> Ants
         {
-            get { return Cells.Where(c => c != null).Select(c => c.Ant).ToList(); }
+            get { return Cells.Where(c => c.Ant != null).Select(c => c.Ant).ToList(); }
         }
 
         private Dictionary<string, UpdateRequest> _updateList = new Dictionary<string, UpdateRequest>();
@@ -40,6 +40,19 @@ namespace AntAICompetition.Server
             Width = width;
             Height = height;
             Cells = new Cell[width*height];
+            for (var i = 0; i < Cells.Length; i++)
+            {
+                Cells[i] = new Cell();
+            }
+            for (var i = 0; i < width; i++)
+            {
+                for (var j = 0; j < height; j++)
+                {
+                    
+                    GetCell(i, j).X = i;
+                    GetCell(i, j).Y = j;
+                }
+            }
         }
 
         /// <summary>
@@ -54,7 +67,7 @@ namespace AntAICompetition.Server
             x = (Width + x)%Width;
             y = (Height + y)%Height;
 
-            return Cells[x*y*Width];
+            return Cells[x+y*Width];
         }
 
         /// <summary>

@@ -8,6 +8,10 @@ namespace AntAICompetition.Server
 {
     public class Cell
     {
+        public Cell()
+        {
+            Type = CellType.Space;
+        }
         public int X { get; set; }
         public int Y { get; set; }
         public CellType Type { get; set; }

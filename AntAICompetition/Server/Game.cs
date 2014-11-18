@@ -102,9 +102,12 @@ namespace AntAICompetition.Server
                 var newAuthToken = System.Guid.NewGuid().ToString();
                 _authTokensToPlayers.Add(newAuthToken, playerName);
                 _playersUpdatedThisTurn.Add(playerName, false);
+                _playerFood.Add(playerName, 0);
+
                 System.Diagnostics.Debug.WriteLine("Player logon [{0}]:[{1}]", playerName, newAuthToken);
                 result.AuthToken = newAuthToken;
                 result.GameStartTime = _nextTick;
+
                 _board.BuildHill(3, 3, playerName);
                 CollectFood(playerName, 3);
             }
@@ -176,7 +179,7 @@ namespace AntAICompetition.Server
                 }
             }
 
-            System.Diagnostics.Debug.WriteLine("[{0}] Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick);
+            System.Diagnostics.Debug.WriteLine("[{0}] Game {3} - Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick, Id);
             _board.Update(this);
             ClientManager.UpdateClientGame(this);
             
