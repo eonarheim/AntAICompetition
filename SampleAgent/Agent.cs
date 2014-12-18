@@ -20,7 +20,7 @@ namespace SampleAgent
 
         public Agent(string name, string endPoint = "http://localhost:16901/") : base(name, endPoint)
         {
-            // todo fun ant agent stuff
+            // todo fun ant agent initialization stuff :)
         }
         
         // Some helpers
@@ -75,7 +75,8 @@ namespace SampleAgent
         // Override the Update method 
         public override void Update(GameStatus gs)
         {
-            // Call MoveAnt to move ants in the simulation
+            // todo implement your awesome agent here :)
+            // Call MoveAnt(ant, direction) to move ants in the simulation
             gs.FriendlyAnts.ForEach(a => MoveAnt(a, GetDirectionOfClosestFoodToAnt(a, gs.VisibleFood)));
             Console.WriteLine("Current Turn {1} : Time to next turn {0}", this.TimeToNextTurn, gs.Turn);
 

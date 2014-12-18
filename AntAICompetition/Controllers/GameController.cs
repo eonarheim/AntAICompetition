@@ -41,18 +41,21 @@ namespace AntAICompetition.Controllers
         [Route("api/game/logon")]
         public LogonResult Logon(LogonRequest logon)
         {
-            if (logon.GameId.HasValue)
+            if (IsValidLogonRequest(logon))
             {
-                return _gameManager.GetGame(logon.GameId).LogonPlayer(logon.AgentName);
-            }
-            else
-            {
-                var game = _gameManager.GetDemoGame();
-                game.LogonDemoAgent();
+                if (logon.GameId.HasValue)
+                {
+                    return _gameManager.GetGame(logon.GameId).LogonPlayer(logon.AgentName);
+                }
+                else
+                {
+                    var game = _gameManager.GetDemoGame();
+                    game.LogonDemoAgent();
 
-                return game.LogonPlayer(logon.AgentName);
+                    return game.LogonPlayer(logon.AgentName);
+                }
             }
-
+            return null;
         }
         /// <summary>
         /// Returns the full status for a certain game
@@ -104,13 +107,33 @@ namespace AntAICompetition.Controllers
         [Route("api/game/update")]
         public UpdateResult Update(UpdateRequest updateRequest)
         {
-            if (updateRequest != null && updateRequest.MoveAntRequests != null)
+            if (IsValidUpdateRequest(updateRequest))
             {
                 return _gameManager.GetGame(updateRequest.GameId).UpdatePlayer(updateRequest);
             }
             return null;
         }
 
+        private bool IsValidLogonRequest(LogonRequest logonRequest)
+        {
+            if (logonRequest != null && !string.IsNullOrWhiteSpace(logonRequest.AgentName))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool IsValidUpdateRequest(UpdateRequest updateRequest)
+        {
+            if(updateRequest != null && updateRequest.MoveAntRequests != null && !string.IsNullOrWhiteSpace(updateRequest.AuthToken))
+            {
+                if (updateRequest.MoveAntRequests.Any(ma => ma.Direction == "up" || ma.Direction == "down" || ma.Direction == "left" || ma.Direction == "right"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
     }
 }
