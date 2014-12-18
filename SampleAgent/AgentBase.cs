@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -92,10 +93,23 @@ namespace SampleAgent
                 {
 
                     var gs = await UpdateGameState();
+                    if (gs.IsGameOver)
+                    {
+                        _isRunning = false;
+                        Console.WriteLine("Game Over!");
+                        Console.WriteLine(gs.Status);
+                        _client.Dispose();
+                        break;
+                    }
+
                     Update(gs);
                     var ur = await SendUpdate(this._pendingMoveRequests);
                     this._pendingMoveRequests.Clear();
-                    Thread.Sleep((int)(TimeToNextTurn));
+                    if (TimeToNextTurn > 0)
+                    {
+                        Thread.Sleep((int)(TimeToNextTurn));    
+                    }
+                    
                 }
             }
         }

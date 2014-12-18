@@ -87,10 +87,15 @@ namespace AntAICompetition.Server
             // Get new player updates
             var updates = _updateList.Values.Where(v => v != null);
             
-            updates.SelectMany(u => u.MoveAntRequests).ForEach(u => MoveAnt(game, u.AntId, u.Direction));
+            //updates.SelectMany(u => u.MoveAntRequests).ForEach(u => MoveAnt(game, u.AntId, u.Direction));
+            updates.SelectMany(u => u.MoveAntRequests).ForEach(u => UpdateAnt(game, u.AntId, u.Direction));
+            updates.SelectMany(u => u.MoveAntRequests).ForEach(u => EvaluateAnts(game));
+            
             
             SpawnFood();
             
+
+
             // Clear updates
             _updateList.Clear();
         }
@@ -131,6 +136,80 @@ namespace AntAICompetition.Server
             GetCell(x, y).Type = CellType.Food;
         }
 
+        private void UpdateAnt(Game game, int antId, string direction)
+        {
+            var ant = Ants.FirstOrDefault(a => a.Id == antId);
+            if (ant != null)
+            {
+                var newX = ant.X;
+                var newY = ant.Y;
+                if (direction == "up")
+                {
+                    newY = (Height + ant.Y - 1)%Height;
+                }
+                else if (direction == "down")
+                {
+                    newY = (Height + ant.Y + 1)%Height;
+                }
+                else if (direction == "left")
+                {
+                    newX = (Width + ant.X - 1)%Width;
+                }
+                else if (direction == "right")
+                {
+                    newX = (Width + ant.X + 1)%Width;
+                }
+
+                var potentialCell = GetCell(newX, newY);
+                if (potentialCell.Type == CellType.Wall)
+                {
+                    //do nothing it's a wall
+                    //todo report error back through api
+                    return;
+                }
+                
+
+                ant.X = newX;
+                ant.Y = newY;
+            }
+        }
+
+        private void EvaluateAnts(Game game)
+        {
+            // Kill ants 
+            var allAnts = this.Ants.ToList();
+            foreach (var ant in allAnts)
+            {
+                var matches = allAnts.FindAll(a => a != ant && a.X == ant.X && a.Y == ant.Y);
+                if (matches.Count > 0)
+                {
+                    matches.ForEach(Kill);
+                    Kill(ant);
+                }
+            }
+
+            // Update positions
+            Cells.ForEach(c => c.Ant = null);
+            allAnts.ForEach(a => GetCell(a.X, a.Y).Ant = a);
+
+            // Collect food
+            allAnts.Where(a => GetCell(a.X, a.Y).Type == CellType.Food).ForEach(a =>
+            {
+                game.CollectFood(a.Owner);
+                GetCell(a.X, a.Y).Type = CellType.Space;
+            });
+
+            // Check for win condition
+            var winningAnt = allAnts.FirstOrDefault(
+                a => GetCell(a.X, a.Y).Type == CellType.Hill && Hills[a.Owner].X != a.X && Hills[a.Owner].Y != a.Y);
+            if (winningAnt != null)
+            {
+                game.Win(winningAnt.Owner);
+            }
+
+
+        }
+
         private void MoveAnt(Game game, int antId, string direction)
         {
             var ant = Ants.FirstOrDefault(a => a.Id == antId);
@@ -154,16 +233,20 @@ namespace AntAICompetition.Server
                 {
                     newX = (Width + ant.X+1)%Width;
                 }
+
+
                 var potentialCell = GetCell(newX, newY);
                 if (potentialCell.Ant != null && ant.Owner != potentialCell.Ant.Owner)
                 {
                     Kill(potentialCell.Ant);
                     Kill(ant);
+                    return;
                 }
                 if (potentialCell.Type == CellType.Wall)
                 {
                     //do nothing it's a wall
                     //todo report error back through api
+                    return;
                 }
                 if (potentialCell.Type == CellType.Food)
                 {
@@ -174,11 +257,14 @@ namespace AntAICompetition.Server
                 // If the space is movable or a hill move the ant
                 if (potentialCell.Type == CellType.Space || potentialCell.Type == CellType.Hill)
                 {
-                    //todo implement win condition when an ant steps on an enemy hill
                     GetCell(ant.X, ant.Y).Ant = null;
                     ant.X = newX;
                     ant.Y = newY;
                     GetCell(newX, newY).Ant = ant;
+                    if (potentialCell.Type == CellType.Hill && Hills[ant.Owner].X != potentialCell.X && Hills[ant.Owner].Y != potentialCell.Y)
+                    {
+                        game.Win(ant.Owner);
+                    }
                 }
 
             }
@@ -204,12 +290,12 @@ namespace AntAICompetition.Server
 
         public List<Ant> GetAllFriendlyAnts(string playerName)
         {
-            return Ants.Where(a => a.Owner == playerName).ToList();
+            return Ants.ToList().Where(a => a!= null && a.Owner == playerName).ToList();
         }
 
         public List<Ant> GetAllEnemyAnts(string playerName)
         {
-            return Ants.Where(a => a.Owner != playerName).ToList();
+            return Ants.ToList().Where(a => a!=null && a.Owner != playerName).ToList();
         } 
 
         public List<Ant> GetVisibleEnemyAnts(string playerName)

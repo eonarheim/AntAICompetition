@@ -5,6 +5,7 @@ namespace SampleAgent.ApiDTOs
     public class GameStatus
     {
         public bool IsGameOver { get; set; }
+        public string Status { get; set; }
         public int GameId { get; set; }
         public int Turn { get; set; }
         public int TotalFood { get; set; }

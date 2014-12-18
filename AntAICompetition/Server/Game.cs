@@ -57,12 +57,14 @@ namespace AntAICompetition.Server
 
         // Timing
         private int _turnLength;
+        private int _maxTurn;
         private DateTime _lastTick = new DateTime();
         private DateTime _nextTick = new DateTime();
         private bool _demoAgentStarted = false;
 
 
         // Public Properties
+        
         public string Status { get; set; }
         public string Name { get; set; }
         public List<string> Players
@@ -77,15 +79,17 @@ namespace AntAICompetition.Server
 
         public bool Running { get; private set; }
 
-        public Game(int gameStartDelay = 10000, int turnLength = 2000, int numPlayers = 2)
+        public Game(int gameStartDelay = 10000, int turnLength = 500, int numPlayers = 2, int maxTurn = 400)
         {
             _numPlayers = numPlayers;
             _turnLength = turnLength;
+            _maxTurn = maxTurn;
             System.Diagnostics.Debug.WriteLine("Starting game {0}...", _id);
+
             _gameLoop = new Timer(Tick, this, gameStartDelay, _turnLength);
             _lastTick = DateTime.Now;
-            _nextTick = _lastTick.AddMilliseconds(_turnLength+gameStartDelay);
-
+            _nextTick = _lastTick.AddMilliseconds(_turnLength + gameStartDelay);
+            Running = true;
         }
 
         #region Helpers
@@ -265,9 +269,18 @@ namespace AntAICompetition.Server
         public void Tick(object stateInfo)
         {
             _turn++;
+            if (_turn >= this._maxTurn)
+            {
+                this.Status = "Max Turn limit reached, ties broken by most ants";
+                this.Stop();   
+            }
+
             _lastTick = _nextTick;
             _nextTick = DateTime.Now.AddMilliseconds(_turnLength);
             _players.ForEach(p => _playersUpdatedThisTurn[p] = false);
+            
+            System.Diagnostics.Debug.WriteLine("[{0}] Game {3} - Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick, Id);
+            _board.Update(this);
             foreach (var player in _players)
             {
                 if (_playerFood[player] > 0 && _board.CanSpawnAnt(player))
@@ -275,15 +288,31 @@ namespace AntAICompetition.Server
                     _playerFood[player]--;
                     _board.SpawnAnt(player);
                 }
+
+                if (_board.GetAllFriendlyAnts(player).Count == 0)
+                {
+                    Lose(player);
+                }
             }
 
-            System.Diagnostics.Debug.WriteLine("[{0}] Game {3} - Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick, Id);
-            _board.Update(this);
+            
+            
             ClientManager.UpdateClientGame(this);
             
         }
 
+        public void Win(string playerName)
+        {
+            this.Status = string.Format("{0} Wins!", playerName);
+            this.Stop();
+        }
 
-        
+        public void Lose(string playerName)
+        {
+            // todo this is wrong
+            var other = this._players.FirstOrDefault(p => p != playerName);
+            this.Status = string.Format("{0} Wins!", other);
+            this.Stop();
+        }
     }
 }
