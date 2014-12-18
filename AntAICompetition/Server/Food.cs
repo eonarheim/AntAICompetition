@@ -6,10 +6,14 @@ using AntAICompetition.Models;
 
 namespace AntAICompetition.Server
 {
-    public class Hill : ICoordinates
+    public class Food : ICoordinates
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public string Owner { get; set; }
+        public Food(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
     }
 }

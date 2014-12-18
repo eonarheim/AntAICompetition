@@ -10,12 +10,14 @@ namespace AntAICompetition.Models
     {
         public int GameId { get; set; }
         public int Turn { get; set; }
-        public int Food { get; set; }
+        public int TotalFood { get; set; }
         public Hill Hill { get; set; }
         public int FogOfWar { get; set; }
         public long MillisecondsUntilNextTurn { get; set; }
+
         public List<Ant> FriendlyAnts { get; set; }
         public List<Ant> EnemyAnts { get; set; }
+        public List<Food> VisibleFood { get; set; } 
 
     }
 }

@@ -35,11 +35,12 @@ namespace AntAICompetition.Server
 
         public Dictionary<string, Hill> Hills = new Dictionary<string, Hill>();
 
-        public Board(int width, int height, string mapFile = "~/App_Data/default.map")
+        public Board(int width, int height, int FogOfWarDistance = 10, string mapFile = "~/App_Data/default.map")
         {
             // todo load the map file
             Width = width;
             Height = height;
+            FogOfWar = FogOfWarDistance;
             Cells = new Cell[width*height];
             for (var i = 0; i < Cells.Length; i++)
             {
@@ -181,8 +182,77 @@ namespace AntAICompetition.Server
                 }
 
             }
-            
         }
+
+        public List<Food> GetVisibleFood(string playerName)
+        {
+            var result = new List<Food>();
+            var friendlies = GetAllFriendlyAnts(playerName);
+            var foods = Cells.Where(c => c.Type == CellType.Food).Select(c => new Food(c.X, c.Y));
+            foreach (var friendly in friendlies)
+            {
+                foreach (var food in foods)
+                {
+                    if (friendly.GetDistance(food) <= FogOfWar && !result.Contains(food))
+                    {
+                        result.Add(food);
+                    }
+                }
+            }
+            return result;
+        } 
+
+        public List<Ant> GetAllFriendlyAnts(string playerName)
+        {
+            return Ants.Where(a => a.Owner == playerName).ToList();
+        }
+
+        public List<Ant> GetAllEnemyAnts(string playerName)
+        {
+            return Ants.Where(a => a.Owner != playerName).ToList();
+        } 
+
+        public List<Ant> GetVisibleEnemyAnts(string playerName)
+        {
+            var result = new List<Ant>();
+            var friendlies = GetAllFriendlyAnts(playerName);
+            var enemies = GetAllEnemyAnts(playerName);
+            // double for loop of DOOOOOOOOM!
+            // todo there is probably a smarter way to do this calculation
+            foreach (var playerAnt in friendlies)
+            {
+                foreach (var enemyAnt in enemies)
+                {
+                    // we are in range and we haven't seen this ant yet
+                    if (playerAnt.GetDistance(enemyAnt) <= FogOfWar && !result.Contains(enemyAnt))
+                    {
+                        result.Add(enemyAnt);
+                    } 
+                }
+            }
+
+            return result;
+        }
+
+        public List<Hill> GetVisibleEnemyHills(string playerName)
+        {
+            var result = new List<Hill>();
+
+            var friendlies = GetAllFriendlyAnts(playerName);
+            var enemyHills = Hills.Values.Where(h => h.Owner != playerName);
+            foreach (var friendly in friendlies)
+            {
+                foreach (var enemyHill in enemyHills)
+                {
+                    if (friendly.GetDistance(enemyHill) <= FogOfWar && !result.Contains(enemyHill))
+                    {
+                        result.Add(enemyHill);
+                    }
+                }
+            }
+
+            return result; 
+        } 
 
         private void Kill(Ant ant)
         {

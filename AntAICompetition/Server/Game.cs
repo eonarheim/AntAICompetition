@@ -30,6 +30,19 @@ namespace AntAICompetition.Server
             get { return _id; }
         }
 
+        // Server agents
+        // todo implement server agent
+
+        private int _currentHill = 0;
+        private List<Hill> HillLocations = new List<Hill>()
+        {
+            new Hill(){X=3, Y=3},
+            new Hill(){X=27,Y=27},
+            new Hill(){X=27,Y=3},
+            new Hill(){X=3,Y=27}
+        }; 
+
+
         // Players
         private int _numPlayers = 2;
         private List<string> _players = new List<string>();
@@ -69,10 +82,37 @@ namespace AntAICompetition.Server
 
         }
 
+        #region Helpers
+
         public Hill GetHillFromToken(string authToken)
         {
             var player = GetPlayerFromToken(authToken);
             return _board.Hills[player];
+        }
+
+        public List<Hill> GetVisibileHills(string authToken)
+        {
+            var player = GetPlayerFromToken(authToken);
+            return _board.GetVisibleEnemyHills(player);
+
+        }
+
+        public List<Ant> GetFriendlyAnts(string authToken)
+        {
+            var player = GetPlayerFromToken(authToken);
+            return _board.GetAllFriendlyAnts(player);
+        } 
+
+        public List<Ant> GetVisibleAnts(string authToken)
+        {
+            var player = GetPlayerFromToken(authToken);
+            return _board.GetVisibleEnemyAnts(player);
+        } 
+
+        public List<Food> GetVisibleFood(string authToken)
+        {
+            var player = GetPlayerFromToken(authToken);
+            return _board.GetVisibleFood(player);
         }
 
         public int GetFoodFromToken(string authToken)
@@ -94,6 +134,15 @@ namespace AntAICompetition.Server
             }
             return null;
         }
+
+        public Hill GetNextHill()
+        {
+            var result = HillLocations[_currentHill];
+            _currentHill = (_currentHill + 1)%HillLocations.Count;
+            return result;
+        }
+
+        #endregion
 
         /// <summary>
         /// Stops the game
@@ -135,7 +184,8 @@ namespace AntAICompetition.Server
                 result.AuthToken = newAuthToken;
                 result.GameStartTime = _nextTick;
 
-                _board.BuildHill(3, 3, playerName);
+                var h = GetNextHill();
+                _board.BuildHill(h.X, h.Y, playerName);
                 CollectFood(playerName, 3);
             }
             result.GameId = Id;
@@ -214,5 +264,6 @@ namespace AntAICompetition.Server
             
         }
 
+        
     }
 }

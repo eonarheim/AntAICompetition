@@ -31,7 +31,7 @@ namespace AntAICompetition.Controllers
             return _gameManager.Games.Values.ToList();
         }
 
-            /// <summary>
+        /// <summary>
         /// Initiates an agent logon with the simulation server by name. Once an agent is logged on, 
         /// a logon result is returned with the id and starting time of the next game.
         /// </summary>
@@ -41,7 +41,7 @@ namespace AntAICompetition.Controllers
         [Route("api/game/logon")]
         public LogonResult Logon(LogonRequest logon)
         {
-            return _gameManager.GetGame(null).LogonPlayer(logon.AgentName);
+            return _gameManager.GetGame(logon.GameId).LogonPlayer(logon.AgentName);
             
         }
         /// <summary>
@@ -57,11 +57,12 @@ namespace AntAICompetition.Controllers
             return new GameStatus()
             {
                 Hill = game.GetHillFromToken(authToken),
-                Food = game.GetFoodFromToken(authToken),
-                FriendlyAnts = game.Board.Ants.Where(a => a.Owner == game.GetPlayerFromToken(authToken)).ToList(),
-                // todo refine this by fog of war
-                EnemyAnts = game.Board.Ants.Where(a => a.Owner != game.GetPlayerFromToken(authToken)).ToList(),
+                TotalFood = game.GetFoodFromToken(authToken),
+                FriendlyAnts = game.GetFriendlyAnts(authToken),
+                EnemyAnts = game.GetVisibleAnts(authToken),
+                VisibleFood = game.GetVisibleFood(authToken),
                 GameId = id,
+                FogOfWar = game.Board.FogOfWar,
                 MillisecondsUntilNextTurn = game.TimeToNextTurn,
                 Turn = game.Turn
             };
