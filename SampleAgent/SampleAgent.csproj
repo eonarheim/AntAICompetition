@@ -51,15 +51,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Agent.cs" />
+    <Compile Include="AgentBase.cs" />
     <Compile Include="Ant.cs" />
-    <Compile Include="GameStatus.cs" />
-    <Compile Include="LogonRequest.cs" />
-    <Compile Include="LogonResult.cs" />
-    <Compile Include="MoveAntRequest.cs" />
+    <Compile Include="ApiDTOs\GameStatus.cs" />
+    <Compile Include="ApiDTOs\LogonRequest.cs" />
+    <Compile Include="ApiDTOs\LogonResult.cs" />
+    <Compile Include="ApiDTOs\MoveAntRequest.cs" />
+    <Compile Include="ApiDTOs\UpdateRequest.cs" />
+    <Compile Include="ApiDTOs\UpdateResult.cs" />
+    <Compile Include="Food.cs" />
+    <Compile Include="Hill.cs" />
+    <Compile Include="ICoordinates.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UpdateRequest.cs" />
-    <Compile Include="UpdateResult.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

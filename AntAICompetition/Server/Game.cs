@@ -206,8 +206,8 @@ namespace AntAICompetition.Server
                 _demoAgentStarted = true;
                 var agentTask = Task.Factory.StartNew(() =>
                 {
-                    var agent = new Agent("DemoAgent");
-                    agent.Start(this.Id);
+                    var agent = new Agent("Demo Agent");
+                    agent.Start(this.Id).Wait();
                 });
             }
         }

@@ -188,7 +188,7 @@ namespace AntAICompetition.Server
         {
             var result = new List<Food>();
             var friendlies = GetAllFriendlyAnts(playerName);
-            var foods = Cells.Where(c => c.Type == CellType.Food).Select(c => new Food(c.X, c.Y));
+            var foods = Cells.Where(c => c.Type == CellType.Food).Select(c => new Food(c.X, c.Y)).ToList();
             foreach (var friendly in friendlies)
             {
                 foreach (var food in foods)

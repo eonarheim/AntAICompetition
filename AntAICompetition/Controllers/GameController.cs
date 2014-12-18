@@ -71,6 +71,7 @@ namespace AntAICompetition.Controllers
                 FriendlyAnts = game.GetFriendlyAnts(authToken),
                 EnemyAnts = game.GetVisibleAnts(authToken),
                 VisibleFood = game.GetVisibleFood(authToken),
+                EnemyHills = game.GetVisibileHills(authToken),
                 GameId = id,
                 FogOfWar = game.Board.FogOfWar,
                 MillisecondsUntilNextTurn = game.TimeToNextTurn,

@@ -8,108 +8,78 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using SampleAgent.ApiDTOs;
 
 namespace SampleAgent
 {
-    public class Agent
+    public class Agent : AgentBase
     {
-        public int GameId { get; set; }
-        public string AuthToken { get; set; }
-        public List<Ant> Ants { get; set; }
-        public List<Ant> EnemyAnts { get; set; } 
-        public string Name { get; set; }
-
-        public long TimeToNextTurn { get; set; }
-
         public List<string> Directions = new List<string>(){"up", "down", "left", "right"};
-        private bool _isRunning = false;
-        private readonly HttpClient _client = null;
-
         private Random rng = new Random(DateTime.Now.Millisecond);
 
-        public Agent(string name)
+        public Agent(string name, string endPoint = "http://localhost:16901/") : base(name, endPoint)
         {
-            Name = name;
-            // connect to api
-            _client = new HttpClient {BaseAddress = new Uri("http://localhost:16901/")};
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            Ants = new List<Ant>();
-            EnemyAnts = new List<Ant>();
-            
+            // todo fun ant agent stuff
         }
-
-        private async Task<LogonResult> Logon(int? gameId = null)
-        {
-            var response = await _client.PostAsJsonAsync<LogonRequest>("api/game/logon", new LogonRequest()
-            {
-                GameId = gameId,
-                AgentName = Name
-            });
-            var result = await response.Content.ReadAsAsync<LogonResult>();
-            AuthToken = result.AuthToken;
-            GameId = result.GameId;
-            return result;
-        }
-
         
-
-        private async Task<GameStatus> UpdateGameState()
+        // Some helpers
+        private string GetDirectionOfClosestFoodToAnt(Ant ant, List<Food> food)
         {
-            var response = await _client.PostAsync(string.Format("api/game/{0}/status/{1}", GameId, AuthToken), null);
-            var result = await response.Content.ReadAsAsync<GameStatus>();
-            Ants.Clear();
-            EnemyAnts.Clear();
-            Ants = result.FriendlyAnts;
-            EnemyAnts = result.EnemyAnts;
-            TimeToNextTurn = result.MillisecondsUntilNextTurn;
-            return result;
-        }
-
-        private async Task<UpdateResult> SendUpdate(List<MoveAntRequest> moveRequests)
-        {
-            var response = await _client.PostAsJsonAsync("api/game/update", new UpdateRequest()
-                                                                      {
-                                                                          AuthToken = AuthToken,
-                                                                          GameId = GameId,
-                                                                          MoveAntRequests = moveRequests
-                                                                      });
-            var result = await response.Content.ReadAsAsync<UpdateResult>();
-            return result;
-        }
-
-       
-        public MoveAntRequest MoveAnt(Ant ant)
-        {
-            var directionId = rng.Next(0, 4);
-            return new MoveAntRequest(){AntId = ant.Id, Direction = Directions[directionId]};
-        }
-
-        public void Update()
-        {
-            UpdateGameState().Wait();
-            Console.WriteLine("Ants to update " + Ants.Count);
-            SendUpdate(Ants.Select(MoveAnt).ToList()).Wait();
-        }
-
-        public void Start(int? gameId = null)
-        {
-            Logon(gameId).Wait();
-            if (!_isRunning)
+            Console.WriteLine("Looking for food in {0}", food.Count);
+            Food closest = null;
+            var minDistance = 9999.0;
+            foreach (var f in food)
             {
-                _isRunning = true;
-                while (_isRunning)
+                if (ant.GetDistance(f) < minDistance)
                 {
-                    Update();
-                    Thread.Sleep((int)(TimeToNextTurn));
+                    minDistance = ant.GetDistance(f);
+                    closest = f;
                 }
+            }
+            if (closest != null)
+            {
+                return GetDirection(ant, closest);
+            }
+            else
+            {
+                return GetRandomDirection();
             }
         }
 
-        public void Stop()
+        private string GetRandomDirection()
         {
-            _isRunning = false;
+            return Directions[rng.Next(0, 4)];
+        }
+
+        private string GetDirection(ICoordinates from, ICoordinates to)
+        {
+            //Console.WriteLine("From {0},{1} to {2},{3}", @from.X, @from.Y, to.X, to.Y);
+            var dirX = to.X - from.X;
+            var dirY = to.Y - from.Y;
+            // greatest diff in x
+            var dir = "left";
+            if (Math.Abs(dirX) > Math.Abs(dirY))
+            {
+                dir = dirX > 0 ? "right" : "left";
+            }
+            else
+            {
+                dir = dirY > 0 ? "down" : "up";
+            }
+            //Console.WriteLine("Going {0}", dir);
+            return dir;
+        }
+
+
+        // Override the Update method 
+        public override void Update(GameStatus gs)
+        {
+            // Call MoveAnt to move ants in the simulation
+            gs.FriendlyAnts.ForEach(a => MoveAnt(a, GetDirectionOfClosestFoodToAnt(a, gs.VisibleFood)));
+            Console.WriteLine("Current Turn {1} : Time to next turn {0}", this.TimeToNextTurn, gs.Turn);
+
+            // Updates are sent to the server automagically at the end of update!
         }
     }
 }

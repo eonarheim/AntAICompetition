@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace SampleAgent
 {
-    public class LogonRequest
+    public interface ICoordinates
     {
-        public int? GameId { get; set; }
-        public string AgentName { get; set; }
+        int X { get; set; }
+        int Y { get; set; }
     }
 }

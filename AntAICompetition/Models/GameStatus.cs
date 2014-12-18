@@ -17,6 +17,7 @@ namespace AntAICompetition.Models
 
         public List<Ant> FriendlyAnts { get; set; }
         public List<Ant> EnemyAnts { get; set; }
+        public List<Hill> EnemyHills { get; set; } 
         public List<Food> VisibleFood { get; set; } 
 
     }
