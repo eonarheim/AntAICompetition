@@ -40,9 +40,13 @@ namespace SampleAgent
             
         }
 
-        private async Task<LogonResult> Logon()
+        private async Task<LogonResult> Logon(int? gameId = null)
         {
-            var response = await _client.PostAsJsonAsync("api/game/logon", new LogonRequest(){AgentName = Name});
+            var response = await _client.PostAsJsonAsync<LogonRequest>("api/game/logon", new LogonRequest()
+            {
+                GameId = gameId,
+                AgentName = Name
+            });
             var result = await response.Content.ReadAsAsync<LogonResult>();
             AuthToken = result.AuthToken;
             GameId = result.GameId;
@@ -89,9 +93,9 @@ namespace SampleAgent
             SendUpdate(Ants.Select(MoveAnt).ToList()).Wait();
         }
 
-        public void Start()
+        public void Start(int? gameId = null)
         {
-            Logon().Wait();
+            Logon(gameId).Wait();
             if (!_isRunning)
             {
                 _isRunning = true;

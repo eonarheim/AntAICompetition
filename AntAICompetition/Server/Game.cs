@@ -3,9 +3,14 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
-using AntAICompetition.Models;
 using Microsoft.Ajax.Utilities;
+using SampleAgent;
+using Ant = AntAICompetition.Models.Ant;
+using LogonResult = AntAICompetition.Models.LogonResult;
+using UpdateRequest = AntAICompetition.Models.UpdateRequest;
+using UpdateResult = AntAICompetition.Models.UpdateResult;
 
 namespace AntAICompetition.Server
 {
@@ -54,6 +59,7 @@ namespace AntAICompetition.Server
         private int _turnLength;
         private DateTime _lastTick = new DateTime();
         private DateTime _nextTick = new DateTime();
+        private bool _demoAgentStarted = false;
 
 
         // Public Properties
@@ -193,6 +199,19 @@ namespace AntAICompetition.Server
             return result;
         }
 
+        public void LogonDemoAgent()
+        {
+            if (!_demoAgentStarted)
+            {
+                _demoAgentStarted = true;
+                var agentTask = Task.Factory.StartNew(() =>
+                {
+                    var agent = new Agent("DemoAgent");
+                    agent.Start(this.Id);
+                });
+            }
+        }
+
         /// <summary>
         /// Returns the time to the next turn in milliseconds
         /// </summary>
@@ -263,6 +282,7 @@ namespace AntAICompetition.Server
             ClientManager.UpdateClientGame(this);
             
         }
+
 
         
     }

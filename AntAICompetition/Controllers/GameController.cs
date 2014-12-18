@@ -41,8 +41,18 @@ namespace AntAICompetition.Controllers
         [Route("api/game/logon")]
         public LogonResult Logon(LogonRequest logon)
         {
-            return _gameManager.GetGame(logon.GameId).LogonPlayer(logon.AgentName);
-            
+            if (logon.GameId.HasValue)
+            {
+                return _gameManager.GetGame(logon.GameId).LogonPlayer(logon.AgentName);
+            }
+            else
+            {
+                var game = _gameManager.GetDemoGame();
+                game.LogonDemoAgent();
+
+                return game.LogonPlayer(logon.AgentName);
+            }
+
         }
         /// <summary>
         /// Returns the full status for a certain game

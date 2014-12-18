@@ -28,6 +28,13 @@ namespace AntAICompetition.Server
             return game;
         }
 
+        public Game GetDemoGame()
+        {
+            var game = new Game();
+            Games.Add(game.Id, game);
+            return game;
+        }
+
         public static GameManager Instance
         {
             get { return _instance; }

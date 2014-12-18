@@ -27,11 +27,9 @@
                 } else {
                     $("#no-games").show();
                 }
-
+                // clear
+                $("#games").empty();
                 games.forEach(function(game) {
-
-                    // clear
-                    $("#games").empty();
 
                     // build link
                     var $li = $("<li>");

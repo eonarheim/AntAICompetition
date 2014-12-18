@@ -69,6 +69,10 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.2\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -86,9 +90,6 @@
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http">
-    </Reference>
-    <Reference Include="System.Net.Http.Formatting, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.0\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
@@ -178,6 +179,7 @@
     <Compile Include="Hubs\AntsHub.cs" />
     <Compile Include="Models\Ant.cs" />
     <Compile Include="Models\GameStatus.cs" />
+    <Compile Include="Models\ICoordinates.cs" />
     <Compile Include="Models\LogonRequest.cs" />
     <Compile Include="Models\LogonResult.cs" />
     <Compile Include="Models\MoveAntRequest.cs" />
@@ -188,6 +190,7 @@
     <Compile Include="Server\Board.cs" />
     <Compile Include="Server\Cell.cs" />
     <Compile Include="Server\ClientManager.cs" />
+    <Compile Include="Server\Food.cs" />
     <Compile Include="Server\Game.cs" />
     <Compile Include="Server\GameManager.cs" />
     <Compile Include="Server\Hill.cs" />
@@ -247,7 +250,12 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home\Game.cshtml" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SampleAgent\SampleAgent.csproj">
+      <Project>{f6611542-b084-45e3-ab22-43986accaf52}</Project>
+      <Name>SampleAgent</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
