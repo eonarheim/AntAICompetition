@@ -138,9 +138,37 @@ namespace AntAICompetition.Server
         public void SpawnFood()
         {
             var rng = new Random(DateTime.Now.Millisecond);
-            var x = rng.Next(0, Width);
-            var y = rng.Next(0, Height);
-            GetCell(x, y).Type = CellType.Food;
+            var midWidth = Width / 2;
+            var midHeight = Height / 2;
+
+            if (rng.NextDouble() < _chanceToSpawnFood)
+            {
+                var x1 = rng.Next(0, midWidth);
+                var y1 = rng.Next(0, midHeight);
+                GetCell(x1, y1).Type = CellType.Food;
+            }
+
+            if (rng.NextDouble() < _chanceToSpawnFood)
+            {
+                var x2 = rng.Next(midWidth, Width);
+                var y2 = rng.Next(0, midHeight);
+                GetCell(x2, y2).Type = CellType.Food;
+            }
+
+            if (rng.NextDouble() < _chanceToSpawnFood)
+            {
+                var x3 = rng.Next(0, midWidth);
+                var y3 = rng.Next(midHeight, Height);
+                GetCell(x3, y3).Type = CellType.Food;
+            }
+
+
+            if (rng.NextDouble() < _chanceToSpawnFood)
+            {
+                var x4 = rng.Next(midWidth, Width);
+                var y4 = rng.Next(midHeight, Height);
+                GetCell(x4, y4).Type = CellType.Food;
+            }
         }
 
         private void UpdateAnt(Game game, int antId, string direction)
