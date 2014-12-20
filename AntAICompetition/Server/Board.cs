@@ -25,6 +25,11 @@ namespace AntAICompetition.Server
             get { return Cells.Where(c => c.Ant != null).Select(c => c.Ant).ToList(); }
         }
 
+        public List<Cell> Walls
+        {
+            get { return Cells.Where(c => c.Type == CellType.Wall).ToList(); }
+        } 
+
         private ConcurrentDictionary<string, UpdateRequest> _updateList = new ConcurrentDictionary<string, UpdateRequest>();
 
         public int Width { get; private set; }
@@ -338,7 +343,26 @@ namespace AntAICompetition.Server
             }
 
             return result; 
-        } 
+        }
+        public List<Cell> GetVisibleWalls(string playerName)
+        {
+            var result = new List<Cell>();
+            var friendlies = GetAllFriendlyAnts(playerName);
+            var walls = Walls;
+            foreach (var friendly in friendlies)
+            {
+                foreach (var wall in walls)
+                {
+                    if (friendly.GetDistance(wall) <= FogOfWar && !result.Contains(wall))
+                    {
+                        result.Add(wall);
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         private void Kill(Ant ant)
         {
@@ -354,5 +378,7 @@ namespace AntAICompetition.Server
             }
             _updateList[playeName] = updateRequest;
         }
+
+        
     }
 }

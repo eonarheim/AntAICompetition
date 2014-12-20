@@ -107,6 +107,12 @@ namespace AntAICompetition.Server
 
         }
 
+        public List<Cell> GetVisibileWalls(string authToken)
+        {
+            var player = GetPlayerFromToken(authToken);
+            return _board.GetVisibleWalls(player);
+        } 
+
         public List<Ant> GetFriendlyAnts(string authToken)
         {
             var player = GetPlayerFromToken(authToken);

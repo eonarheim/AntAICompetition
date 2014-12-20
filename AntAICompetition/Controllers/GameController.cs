@@ -75,6 +75,7 @@ namespace AntAICompetition.Controllers
                 EnemyAnts = game.GetVisibleAnts(authToken),
                 VisibleFood = game.GetVisibleFood(authToken),
                 EnemyHills = game.GetVisibileHills(authToken),
+                Walls = game.GetVisibileWalls(authToken),
                 IsGameOver = !game.Running,
                 Status = game.Status,
                 GameId = id,
