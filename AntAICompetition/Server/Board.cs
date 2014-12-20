@@ -42,24 +42,46 @@ namespace AntAICompetition.Server
 
         public Board(int width, int height, int FogOfWarDistance = 10, string mapFile = "~/App_Data/default.map")
         {
-            // todo load the map file
-            Width = width;
-            Height = height;
-            FogOfWar = FogOfWarDistance;
-            Cells = new Cell[width*height];
+            var mapString = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(mapFile));
+            var map = JsonConvert.DeserializeObject<Map>(mapString); // I love Json.net, James Newton-King you rock +20 gold stars
+
+            Width = map.Width;
+            Height = map.Height;
+            FogOfWar = map.FogOfWar;
+            Cells = new Cell[Width*Height];
             for (var i = 0; i < Cells.Length; i++)
             {
                 Cells[i] = new Cell();
             }
-            for (var i = 0; i < width; i++)
+            for (var i = 0; i < Width; i++)
             {
-                for (var j = 0; j < height; j++)
+                for (var j = 0; j < Height; j++)
                 {
                     
                     GetCell(i, j).X = i;
                     GetCell(i, j).Y = j;
                 }
             }
+
+            if (map.SymmetricHills)
+            {
+                // todo hills need to be a member off of board not game :(
+            }
+
+            map.WallLocations.ForEach(w =>
+            {
+                GetCell(w.X, w.Y).Type = CellType.Wall;
+            });
+            if (map.SymmetricWalls)
+            {
+                map.WallLocations.ForEach(w =>
+                {
+                    GetCell(Width - w.X - 1, w.Y).Type = CellType.Wall;
+                    GetCell(w.X, Height - w.Y - 1).Type = CellType.Wall;
+                    GetCell(Width - w.X - 1, Height - w.Y - 1).Type = CellType.Wall;
+                }); 
+            }
+
         }
 
         /// <summary>
@@ -138,7 +160,11 @@ namespace AntAICompetition.Server
             var rng = new Random(DateTime.Now.Millisecond);
             var x = rng.Next(0, Width);
             var y = rng.Next(0, Height);
-            GetCell(x, y).Type = CellType.Food;
+            var potentialCell = GetCell(x, y);
+            if (potentialCell.Type != CellType.Wall)
+            {
+                GetCell(x, y).Type = CellType.Food;
+            }
         }
 
         private void UpdateAnt(Game game, int antId, string direction)
