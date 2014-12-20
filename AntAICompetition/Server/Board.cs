@@ -25,6 +25,11 @@ namespace AntAICompetition.Server
             get { return Cells.Where(c => c.Ant != null).Select(c => c.Ant).ToList(); }
         }
 
+        public List<Cell> Walls
+        {
+            get { return Cells.Where(c => c.Type == CellType.Wall).ToList(); }
+        } 
+
         private ConcurrentDictionary<string, UpdateRequest> _updateList = new ConcurrentDictionary<string, UpdateRequest>();
 
         private const double _chanceToSpawnFood = .45;
@@ -133,40 +138,9 @@ namespace AntAICompetition.Server
         public void SpawnFood()
         {
             var rng = new Random(DateTime.Now.Millisecond);
-            var midWidth = Width / 2;
-            var midHeight = Height / 2;
-
-            if (rng.NextDouble() < _chanceToSpawnFood)
-            {
-                var x1 = rng.Next(0, midWidth);
-                var y1 = rng.Next(0, midHeight);
-                GetCell(x1, y1).Type = CellType.Food;
-            }
-
-            if (rng.NextDouble() < _chanceToSpawnFood)
-            {
-                var x2 = rng.Next(midWidth, Width);
-                var y2 = rng.Next(0, midHeight);
-                GetCell(x2, y2).Type = CellType.Food;
-            }
-
-            if (rng.NextDouble() < _chanceToSpawnFood)
-            {
-                var x3 = rng.Next(0, midWidth);
-                var y3 = rng.Next(midHeight, Height);
-                GetCell(x3, y3).Type = CellType.Food;
-            }
-
-
-            if (rng.NextDouble() < _chanceToSpawnFood)
-            {
-                var x4 = rng.Next(midWidth, Width);
-                var y4 = rng.Next(midHeight, Height);
-                GetCell(x4, y4).Type = CellType.Food;
-            }
-
-
-
+            var x = rng.Next(0, Width);
+            var y = rng.Next(0, Height);
+            GetCell(x, y).Type = CellType.Food;
         }
 
         private void UpdateAnt(Game game, int antId, string direction)
@@ -371,7 +345,26 @@ namespace AntAICompetition.Server
             }
 
             return result; 
-        } 
+        }
+        public List<Cell> GetVisibleWalls(string playerName)
+        {
+            var result = new List<Cell>();
+            var friendlies = GetAllFriendlyAnts(playerName);
+            var walls = Walls;
+            foreach (var friendly in friendlies)
+            {
+                foreach (var wall in walls)
+                {
+                    if (friendly.GetDistance(wall) <= FogOfWar && !result.Contains(wall))
+                    {
+                        result.Add(wall);
+                    }
+                }
+            }
+
+            return result;
+        }
+
 
         private void Kill(Ant ant)
         {

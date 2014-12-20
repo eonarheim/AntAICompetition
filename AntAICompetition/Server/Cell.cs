@@ -6,7 +6,7 @@ using AntAICompetition.Models;
 
 namespace AntAICompetition.Server
 {
-    public class Cell
+    public class Cell : ICoordinates
     {
         public Cell()
         {

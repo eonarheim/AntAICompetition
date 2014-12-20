@@ -85,7 +85,7 @@ namespace SampleAgent
 
         public async Task Start(int? gameId = null)
         {
-            Logon(gameId).Wait();
+            await Logon(gameId);
             if (!_isRunning)
             {
                 _isRunning = true;
@@ -107,7 +107,7 @@ namespace SampleAgent
                     this._pendingMoveRequests.Clear();
                     if (TimeToNextTurn > 0)
                     {
-                        Thread.Sleep((int)(TimeToNextTurn));    
+                        await Task.Delay((int) (TimeToNextTurn));
                     }
                     
                 }

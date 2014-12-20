@@ -14,7 +14,8 @@ namespace SampleAgent.ApiDTOs
         public List<Ant> FriendlyAnts { get; set; }
         public List<Ant> EnemyAnts { get; set; }
         public List<Hill> EnemyHills { get; set; } 
-        public List<Food> VisibleFood { get; set; } 
+        public List<Food> VisibleFood { get; set; }
+        public List<Wall> Walls { get; set; } 
 
     }
 }
