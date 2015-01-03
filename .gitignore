@@ -185,3 +185,13 @@ UpgradeLog*.htm
 
 # Microsoft Fakes
 FakesAssemblies/
+
+# LaTex intermediaries
+*.out
+*.aux
+*.log
+*.synctex.gz
+*.pdf
+
+#Mac Stuff
+.DS_Store
