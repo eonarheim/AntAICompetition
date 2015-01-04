@@ -27,7 +27,9 @@ namespace AntAICompetition
             //optional: set serializer settings here
             config.Services.Replace(typeof(IContentNegotiator), new JsonContentNegotiator(jsonFormatter));
 
-            //GlobalConfiguration.Configuration.MessageHandlers.Insert(0, new ServerCompressionHandler(new GZipCompressor(), new DeflateCompressor()));
+            GlobalConfiguration.Configuration.MessageHandlers.Insert(0, new ServerCompressionHandler(1028, new GZipCompressor(), new DeflateCompressor()));
         }
+
+        
     }
 }
