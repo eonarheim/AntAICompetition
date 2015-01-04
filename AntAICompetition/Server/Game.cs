@@ -167,6 +167,8 @@ namespace AntAICompetition.Server
         {
             Running = false;
             _gameLoop.Change(Timeout.Infinite, Timeout.Infinite);
+            _gameLoop.Dispose();
+            _gameLoop = null;
             GameManager.Instance.RemoveGame(this.Id);
         }
 
@@ -275,18 +277,21 @@ namespace AntAICompetition.Server
         /// <param name="stateInfo"></param>
         public void Tick(object stateInfo)
         {
+            if (!Running) return;
             _turn++;
             if (_turn >= this._maxTurn)
             {
                 this.Status = "Max Turn limit reached, ties broken by most ants";
-                this.Stop();   
+                this.Stop();
+                return;
             }
 
             _lastTick = _nextTick;
             _nextTick = DateTime.Now.AddMilliseconds(_turnLength);
             _players.ForEach(p => _playersUpdatedThisTurn[p] = false);
-            
-            System.Diagnostics.Debug.WriteLine("[{0}] Game {3} - Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick, Id);
+
+            System.Diagnostics.Debug.WriteLine("[{0}] Game {3} - Tick turn {1} time to next turn {2}", DateTime.Now,
+                _turn, _nextTick, Id);
             _board.Update(this);
             foreach (var player in _players)
             {
@@ -301,11 +306,7 @@ namespace AntAICompetition.Server
                     Lose(player);
                 }
             }
-
-            
-            
             ClientManager.UpdateClientGame(this);
-            
         }
 
         public void Win(string playerName)
