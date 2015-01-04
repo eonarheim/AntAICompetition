@@ -21,6 +21,7 @@ namespace AntAICompetition.Server
         {
             if (Games.ContainsKey(id))
             {
+                Games[id].Stop();
                 Games.Remove(id);
             }
         }

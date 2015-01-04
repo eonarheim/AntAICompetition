@@ -21,5 +21,7 @@ namespace AntAICompetition
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             
         }
+
+        
     }
 }

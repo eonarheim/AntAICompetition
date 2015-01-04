@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Web;
 using System.Web.Http;
 using AntAICompetition.Models;
 using AntAICompetition.Server;
@@ -28,6 +29,7 @@ namespace AntAICompetition.Controllers
         [Route("api/game")]
         public IList<Game> Get()
         {
+            
             return _gameManager.Games.Values.Where(g => g.Running).ToList();
         }
 

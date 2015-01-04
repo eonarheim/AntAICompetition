@@ -62,6 +62,8 @@ namespace AntAICompetition.Server
         private DateTime _nextTick = new DateTime();
         private bool _demoAgentStarted = false;
 
+        private bool _killed = false;
+
 
         // Public Properties
         
@@ -165,11 +167,20 @@ namespace AntAICompetition.Server
         /// </summary>
         public void Stop()
         {
-            Running = false;
-            _gameLoop.Change(Timeout.Infinite, Timeout.Infinite);
-            _gameLoop.Dispose();
-            _gameLoop = null;
-            GameManager.Instance.RemoveGame(this.Id);
+            try
+            {
+                Running = false;
+                this._killed = true;
+                this.Status = "Game stopped";
+                _gameLoop.Change(Timeout.Infinite, Timeout.Infinite);
+                _gameLoop.Dispose();
+
+                GameManager.Instance.RemoveGame(this.Id);
+            }
+            catch (Exception e)
+            {
+                //swallow
+            }
         }
 
         public void Start()
@@ -277,7 +288,7 @@ namespace AntAICompetition.Server
         /// <param name="stateInfo"></param>
         public void Tick(object stateInfo)
         {
-            if (!Running) return;
+            if (this._killed) return;
             _turn++;
             if (_turn >= this._maxTurn)
             {
