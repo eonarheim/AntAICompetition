@@ -167,6 +167,7 @@ namespace AntAICompetition.Server
         {
             Running = false;
             _gameLoop.Change(Timeout.Infinite, Timeout.Infinite);
+            GameManager.Instance.RemoveGame(this.Id);
         }
 
         public void Start()
