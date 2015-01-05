@@ -12,7 +12,7 @@
     <div class="col-md-2">
         
         <ul id="players"></ul>
-
+        <div id="kill" class="btn btn-danger">Kill Game</div>
         <dl>                       
             <dt>Status</dt>
             <dd id="status">Unknown</dd>
@@ -34,9 +34,16 @@
     <script src="/Scripts/jquery.signalR-2.1.2.min.js"></script>
     <script src="@Url.Content("~/signalr/hubs")"></script>
     <script type="text/javascript">
+        
+
 
         var antsHub = $.connection.antsHub;
         var initialized = false;
+        var gameId = @Model;
+
+        $("#kill").on('click', function() {
+            $.post("@Url.Action("KillGame","Home")", {id: gameId});
+        });
 
         antsHub.client.update = function(game) {
             console.log("Received game update", game);

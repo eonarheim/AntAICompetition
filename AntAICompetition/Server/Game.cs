@@ -62,6 +62,8 @@ namespace AntAICompetition.Server
         private DateTime _nextTick = new DateTime();
         private bool _demoAgentStarted = false;
 
+        private bool _killed = false;
+
 
         // Public Properties
         
@@ -165,8 +167,20 @@ namespace AntAICompetition.Server
         /// </summary>
         public void Stop()
         {
-            Running = false;
-            _gameLoop.Change(Timeout.Infinite, Timeout.Infinite);
+            try
+            {
+                Running = false;
+                this._killed = true;
+                this.Status = "Game stopped";
+                _gameLoop.Change(Timeout.Infinite, Timeout.Infinite);
+                _gameLoop.Dispose();
+
+                GameManager.Instance.RemoveGame(this.Id);
+            }
+            catch (Exception e)
+            {
+                //swallow
+            }
         }
 
         public void Start()
@@ -274,18 +288,21 @@ namespace AntAICompetition.Server
         /// <param name="stateInfo"></param>
         public void Tick(object stateInfo)
         {
+            if (this._killed) return;
             _turn++;
             if (_turn >= this._maxTurn)
             {
                 this.Status = "Max Turn limit reached, ties broken by most ants";
-                this.Stop();   
+                this.Stop();
+                return;
             }
 
             _lastTick = _nextTick;
             _nextTick = DateTime.Now.AddMilliseconds(_turnLength);
             _players.ForEach(p => _playersUpdatedThisTurn[p] = false);
-            
-            System.Diagnostics.Debug.WriteLine("[{0}] Game {3} - Tick turn {1} time to next turn {2}", DateTime.Now, _turn, _nextTick, Id);
+
+            System.Diagnostics.Debug.WriteLine("[{0}] Game {3} - Tick turn {1} time to next turn {2}", DateTime.Now,
+                _turn, _nextTick, Id);
             _board.Update(this);
             foreach (var player in _players)
             {
@@ -300,11 +317,7 @@ namespace AntAICompetition.Server
                     Lose(player);
                 }
             }
-
-            
-            
             ClientManager.UpdateClientGame(this);
-            
         }
 
         public void Win(string playerName)

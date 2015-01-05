@@ -20,5 +20,12 @@ namespace AntAICompetition.Controllers
         {
             return View(id);
         }
+
+        [HttpPost]
+        public JsonResult KillGame(int id)
+        {
+            GameManager.Instance.RemoveGame(id);
+            return Json("success");
+        }
     }
 }

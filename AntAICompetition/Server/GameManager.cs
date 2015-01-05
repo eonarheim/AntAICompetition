@@ -17,6 +17,15 @@ namespace AntAICompetition.Server
 
         public Dictionary<int, Game> Games { get; set; }
 
+        public void RemoveGame(int id)
+        {
+            if (Games.ContainsKey(id))
+            {
+                Games[id].Stop();
+                Games.Remove(id);
+            }
+        }
+
         public Game GetGame(int? id)
         {
             if (id.HasValue)
