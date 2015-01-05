@@ -12,7 +12,6 @@
 }
 \date{}
 
-%----------------------------------------------------------------------------------------
 
 \begin{document}
 
@@ -39,13 +38,13 @@ A player will randomly be assigned a team color: blue or red. Ants may move LEFT
 The pink squares are the hills, where new ants will spawn. Moving one of your ants on top of the opponent's hill will result in victory.
 
 \subsection{Food}
-The green squares are food, picking up a piece of food will create a new ant on your hill. If any ant is currently on your hill when you pick up a piece of food, the new ant will not spawn.Up to four new food may be spawned every turn.
+The green squares are food, picking up a piece of food will create a new ant on your hill. If any ant is currently on your hill when you pick up a piece of food, the new ant will not spawn until the ant on top of the hill moves. Up to four new food may be spawned every turn.
 
 \subsection{Wall}
 No ants may move here, nor may food spawn here.
 
 \subsection{Open Spaces}
-Any ant may try to claim an open space. The map does not wrap around (i.e. an ant moving right at the rightmost boundary will not appear at the leftmost boundary)
+Any ant may try to claim an open space. The map wraps around (i.e. an ant moving right at the rightmost boundary will appear at the leftmost boundary)
 
 \newpage
 \section{Moving}
@@ -57,7 +56,7 @@ Moves may only take a maximum of TWO SECONDS to compute. If the agent does not s
 \begin{itemize}
   \item An ant may move LEFT, RIGHT, UP or DOWN. No diagonal moves are allowed
   \item You may not move on top of a wall
-  \item The map does not wrap around (i.e. an ant moving right at the rightmost boundary will not appear at the leftmost boundary)
+  \item The map wraps around (i.e. an ant moving right at the rightmost boundary will appear at the leftmost boundary)
   \item An invalid move will result in no move
 \end{itemize}
 
@@ -69,7 +68,7 @@ Moves may only take a maximum of TWO SECONDS to compute. If the agent does not s
 \begin{itemize}
   \item Moving onto an enemy ant results in the destruction of both ants
   \item If two ants swap positions, (red moves right and blue moves left) both are destroyed
-  \item Two ants on the same team may not destroy each other
+  \item Two ants on the same team may destroy each other if they move onto the same square (ants aren't very smart)
 \end{itemize}
 
 \subsection{Moving On To Food}
@@ -78,9 +77,9 @@ Moves may only take a maximum of TWO SECONDS to compute. If the agent does not s
 \end{center}
 \begin{itemize}
   \item Grabbing food will create a new ant on your hill
-  \item If any ant is currently on your hill when you pick up a piece of food, the new ant will not spawn
-  \item If two ants move on to the same piece of food, both ants are destroyed. No new ant will spawn
-  \item If two foods are grabbed at the same time, by the same player, only one new ant is gained
+  \item If any ant is currently on your hill when you pick up a piece of food, the new ant will not spawn until the ant on top of the hill moves
+  \item If two ants move on to the same piece of food, both ants are destroyed and the food is preserved. No new ant will spawn
+  \item If two foods are grabbed at the same time, by the same player, the new ants will be queued up
 \end{itemize}
 
 \subsection{Capturing the Hill}
@@ -94,30 +93,39 @@ Moves may only take a maximum of TWO SECONDS to compute. If the agent does not s
 
 
 \newpage
+
+\section{What Can My Ants See?}
+Ants have pretty poor vision, so they can't see the whole board at once! Any ant can only see things up to ten squares away, including wrapping around the other side of the board. Their sense of smell also allows them to see through walls!
+
+\begin{center}
+\includegraphics[scale=0.5]{fieldOfVision.png}
+\end{center}
+
 \section{Winning}
 There are three ways to win a game of Ants
 \begin{itemize}
   \item Destroying the opponent ant hill
   \item If both ant hills are destroyed at the same time, the player with the most ants wins
   \item If time expires on the game, the player with the most ants wins
+  \item If time expires and the number of ants is equal, a tie will be declared and the game will be re-run
 \end{itemize}
 
 \section{Controlling Your Army}
 \subsection{Provided Clients}
-We have provided base clients for .NET, Python and Node.js. An agent may be created by inheriting AgentBase. The only public methods are Update and a constructor. Web service calls and connection to the server are handled by the base class.
+We have provided base clients for .NET, Python and Node.js. An agent may be created by inheriting AgentBase. The only public methods are Update, MoveAnt and a constructor. Web service calls and connection to the server are handled by the base class.
 \newline
 \newline
 \href{https://github.com/eonarheim/AntAICompetition}{Link to clients}
 
 \subsection{API}
-If you are interested in writing your own client in Haskell, PL/SQL or any other language, feel free to use our well-documented \href{https://github.com/eonarheim/AntAICompetition}{API}
+If you are interested in writing your own client in Haskell, PL/SQL or any other language, feel free to use our well-documented \href{http://antscompetition.azurewebsites.net/Help}{API}
 
 \section{Testing Your Submission}
 
-By way of proper API calls or inheriting from the base agents, a new, observable game will be created at \url{https://github.com/eonarheim/AntAICompetition}.
+By way of proper API calls or inheriting from the base agents, a new, observable game will be created at \url{http://antscompetition.azurewebsites.net.}. Or you may clone the \href{https://github.com/eonarheim/AntAICompetition}{github repo} and run locally.
 \newline
 \newline
-When the start() method is called, a new game against a dummy agent will be started. 
+When the start() method of a test agent is called, a new game against a dummy agent will be started. 
 
 \section{Submissions}
 A valid submission will include the following
@@ -136,6 +144,15 @@ A valid submission will include the following
 \begin{itemize}
   \item Writing to the file system
   \item Hacking into the game server in any way
+  \item  Also we reserve the right to disqualify if we determine there has been a violation of the spirit of the competition. Contact us if you are unsure.
 \end{itemize}
+
+\noindent Winners will be announced on the day of Code Camp 4.0
+
+\section{Questions? Comments? Complaints?}
+
+We have started a \href{https://groups.google.com/forum/#!forum/gmi-ant-ai-challenge}{Google Group} where one can discuss strategies, ask clarifying questions or any other questions related to the competition. Please direct all discussion in the \href{https://groups.google.com/forum/#!forum/gmi-ant-ai-challenge}{Google Group.}
+
+
 
 \end{document}
