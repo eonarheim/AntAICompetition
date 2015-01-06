@@ -240,6 +240,7 @@
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
     <Content Include="App_Data\default.map" />
     <None Include="Properties\PublishProfiles\antscompetition.pubxml" />
+    <None Include="Properties\PublishProfiles\antsgame.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

@@ -7,6 +7,8 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNet.WebApi.MessageHandlers.Compression;
+using Microsoft.AspNet.WebApi.MessageHandlers.Compression.Compressors;
 using SampleAgent.ApiDTOs;
 
 namespace SampleAgent
@@ -21,8 +23,8 @@ namespace SampleAgent
         public AgentBase(string name, string endpoint)
         {
             Name = name;
-            // connect to api
-            _client = new HttpClient { BaseAddress = new Uri(endpoint) };
+            // connect to api and handle gzip compressed messasges
+            _client = new HttpClient(new ClientCompressionHandler(1028, new GZipCompressor(), new DeflateCompressor())) { BaseAddress = new Uri(endpoint) };
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
