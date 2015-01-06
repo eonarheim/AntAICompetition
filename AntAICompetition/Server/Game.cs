@@ -22,8 +22,11 @@ namespace AntAICompetition.Server
         private int _turn = 0;
         private long gameTime = 0;
 
+        public static readonly int DEFAULT_HEIGHT=30;
+        public static readonly int DEFAULT_WIDTH = 30;
+
         private Timer _gameLoop;
-        private Board _board = new Board(30, 30);
+        private Board _board = new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH);
 
         public Board Board
         {

@@ -22,7 +22,12 @@ namespace AntAICompetition.Models
 
         public double GetDistance<T>(T other) where T : ICoordinates
         {
-            return Math.Sqrt(Math.Pow(this.X - other.X, 2) + Math.Pow(this.Y - other.Y, 2));
+
+            var minCombinedFromEdgeDistanceX = Math.Min(other.X - 0, Game.DEFAULT_WIDTH - 1 - other.X) + Math.Min(X - 0, Game.DEFAULT_WIDTH - 1 - X);
+            var minCombinedFromEdgeDistanceY = Math.Min(other.Y - 0, Game.DEFAULT_WIDTH - 1 - other.Y) + Math.Min(Y - 0, Game.DEFAULT_WIDTH - 1 - Y);
+
+            return Math.Sqrt(Math.Pow(Math.Min(this.X - other.X,minCombinedFromEdgeDistanceX), 2) +
+                Math.Pow(Math.Min(this.Y - other.Y, minCombinedFromEdgeDistanceY), 2));
         }
 
     }
