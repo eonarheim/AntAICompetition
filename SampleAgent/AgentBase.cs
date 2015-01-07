@@ -24,7 +24,7 @@ namespace SampleAgent
         {
             Name = name;
             // connect to api and handle gzip compressed messasges
-            _client = new HttpClient(new ClientCompressionHandler(1028, new GZipCompressor(), new DeflateCompressor())) { BaseAddress = new Uri(endpoint) };
+            _client = new HttpClient() { BaseAddress = new Uri(endpoint) };
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }

@@ -174,11 +174,10 @@ namespace AntAICompetition.Server
             {
                 Running = false;
                 this._killed = true;
-                this.Status = "Game stopped";
                 _gameLoop.Change(Timeout.Infinite, Timeout.Infinite);
                 _gameLoop.Dispose();
 
-                GameManager.Instance.RemoveGame(this.Id);
+                //GameManager.Instance.RemoveGame(this.Id);
             }
             catch (Exception e)
             {

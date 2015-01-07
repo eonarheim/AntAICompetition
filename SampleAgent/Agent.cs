@@ -18,7 +18,7 @@ namespace SampleAgent
         public List<string> Directions = new List<string>(){"up", "down", "left", "right"};
         private Random rng = new Random(DateTime.Now.Millisecond);
 
-        public Agent(string name, string endPoint = "http://antsgame.azurewebsites.net/")
+        public Agent(string name, string endPoint = "http://antsgame.azurewebsites.net")
             : base(name, endPoint)
         {
             // todo fun ant agent initialization stuff :)

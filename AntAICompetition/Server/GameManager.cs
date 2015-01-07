@@ -17,7 +17,7 @@ namespace AntAICompetition.Server
 
         public Dictionary<int, Game> Games { get; set; }
 
-        public void RemoveGame(int id)
+        public void KillGame(int id)
         {
             if (Games.ContainsKey(id))
             {
@@ -30,7 +30,11 @@ namespace AntAICompetition.Server
         {
             if (id.HasValue)
             {
-                return Games[id.Value];
+                if (Games.ContainsKey(id.Value))
+                {
+                    return Games[id.Value];
+                }
+                return null;
             }
             var game = new Game();
             Games.Add(game.Id, game);

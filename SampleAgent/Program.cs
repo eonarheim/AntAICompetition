@@ -10,8 +10,15 @@ namespace SampleAgent
     {
         static void Main(string[] args)
         {
-            var agent = new Agent("RandomWalkAgent");
-            agent.Start().Wait();
+            try
+            {
+                var agent = new Agent("Sample Agent");
+                agent.Start().Wait();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Ooops! Something went wrong! {0}", e.Message);
+            }
         }
     }
 }
