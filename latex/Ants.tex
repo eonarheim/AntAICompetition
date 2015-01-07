@@ -48,7 +48,7 @@ Any ant may try to claim an open space. The map wraps around (i.e. an ant moving
 
 \newpage
 \section{Moving}
-Moves may only take a maximum of TWO SECONDS to compute. If the agent does not send a move within the timefrace, no move is made.
+Agents will submit a list of moves and each move will be simulated as if they happen at the same time. Moves may only take a maximum of TWO SECONDS to compute. If the agent does not send a move within the timeframe, no move is made.
 \subsection{Basic Moves}
 \begin{center}
 \includegraphics{basicMove.png}
@@ -122,7 +122,7 @@ If you are interested in writing your own client in Haskell, PL/SQL or any other
 
 \section{Testing Your Submission}
 
-By way of proper API calls or inheriting from the base agents, a new, observable game will be created at \url{http://antsgame.azurewebsites.net.}. Or you may clone the \href{https://github.com/eonarheim/AntAICompetition}{github repo} and run locally.
+By way of proper API calls or inheriting from the base agents, a new, observable game will be created at \url{http://antsgame.azurewebsites.net}. Or you may clone the \href{https://github.com/eonarheim/AntAICompetition}{github repo} and run locally.
 \newline
 \newline
 When the start() method of a test agent is called, a new game against a dummy agent will be started. 
