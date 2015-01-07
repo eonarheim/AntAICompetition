@@ -84,7 +84,7 @@ namespace AntAICompetition.Server
 
         public bool Running { get; private set; }
 
-        public Game(int gameStartDelay = 10000, int turnLength = 500, int numPlayers = 2, int maxTurn = 400)
+        public Game(int gameStartDelay = 10000, int turnLength = 2000, int numPlayers = 2, int maxTurn = 400)
         {
             _numPlayers = numPlayers;
             _turnLength = turnLength;
