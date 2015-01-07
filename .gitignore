@@ -9,6 +9,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+*.ntvs_analysis.dat
 
 # Build results
 [Dd]ebug/

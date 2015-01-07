@@ -1,0 +1,13 @@
+{
+  "name": "NodeAgent",
+  "version": "0.0.0",
+  "description": "NodeAgent",
+  "main": "app.js",
+  "author": {
+    "name": "Erik Onarheim",
+    "email": "erik.onarheim@gmail.com"
+  },
+  "dependencies": {
+    "node-rest-client": "1.4.3"
+  }
+}
