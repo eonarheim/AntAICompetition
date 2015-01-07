@@ -111,14 +111,70 @@ namespace AntAICompetition.Server
             return GetCell(ant.X, ant.Y);
         }
 
+        private string Opposite(string direction)
+        {
+            switch (direction.ToLower())
+            {
+                case "left":
+                    return "right";
+                case "up":
+                    return "down";
+                case "down":
+                    return "up";
+                case "right":
+                    return "left";
+                default:
+                    return "error";
+            }
+        }
+
+        private double Distance(int antId1, int antId2)
+        {
+            var a1 = Ants.FirstOrDefault(a => a.Id == antId1);
+            var a2 = Ants.FirstOrDefault(a => a.Id == antId2);
+            if (a1 == null || a2 == null) return 9999999;
+            return a1.GetDistance(a2);
+        }
+
+        private bool WillSwap(MoveAntRequest m1, MoveAntRequest m2)
+        {
+            var a1 = Ants.FirstOrDefault(a => a.Id == m1.AntId);
+            var a2 = Ants.FirstOrDefault(a => a.Id == m2.AntId);
+            if (a1 == null || a2 == null) return false;
+
+            // what if positions
+            var a1x = (a1.MoveX(m1.Direction) + Width) % Width;
+            var a1y = (a1.MoveY(m1.Direction) + Height) % Height;
+            var a2x = (a2.MoveX(m2.Direction) + Width) % Width;
+            var a2y = (a2.MoveY(m2.Direction) + Height) % Height;
+
+            // if they are converse they have swapped
+            return a1x == a2.X && a1y == a2.Y && a2x == a1.X && a2y == a1.Y;
+
+        }
         public void Update(Game game)
         {
             // Get new player updates
             var updates = _updateList.Values.Where(v => v != null);
             
-            //updates.SelectMany(u => u.MoveAntRequests).ForEach(u => MoveAnt(game, u.AntId, u.Direction));
-            updates.SelectMany(u => u.MoveAntRequests).ForEach(u => UpdateAnt(game, u.AntId, u.Direction));
-            updates.SelectMany(u => u.MoveAntRequests).ForEach(u => EvaluateAnts(game));
+            var updateRequests = updates.SelectMany(u => u.MoveAntRequests).ToList();
+
+           
+
+            // move and evaluate
+            updateRequests.ForEach(u => UpdateAnt(game, u.AntId, u.Direction));
+            // detect ant swaps
+            // ants that are moving in opposite directions that are 1 unit away are swapping :)
+            var swappedAntIds = new List<int>();
+            foreach (var update in updateRequests)
+            {
+                var swaps = updateRequests.Where(u => u != update && WillSwap(u, update)).Select(u => u.AntId).ToList();
+                swappedAntIds.AddRange(swaps);
+            }
+            updateRequests.ForEach(u => EvaluateAnts(game));
+
+            // kill swaps
+            swappedAntIds.ForEach(Kill);
             
             
             SpawnFood();
@@ -234,6 +290,9 @@ namespace AntAICompetition.Server
                 }
 
                 var potentialCell = GetCell(newX, newY);
+
+                
+                // detect walls
                 if (potentialCell.Type == CellType.Wall)
                 {
                     //do nothing it's a wall
@@ -251,29 +310,32 @@ namespace AntAICompetition.Server
         {
             // Kill ants 
             var allAnts = this.Ants.ToList();
+            var killedAnts = new List<Ant>();
             foreach (var ant in allAnts)
             {
-                var matches = allAnts.FindAll(a => a != ant && a.X == ant.X && a.Y == ant.Y);
+                var matches = allAnts.Where(a => a != ant && a.X == ant.X && a.Y == ant.Y).ToList();
                 if (matches.Count > 0)
                 {
-                    matches.ForEach(Kill);
-                    Kill(ant);
+                    killedAnts.Add(ant);
+                    killedAnts.AddRange(matches);
                 }
             }
 
             // Update positions
+            var newAnts = allAnts.Where(a => !killedAnts.Contains(a)).ToList();
             Cells.ForEach(c => c.Ant = null);
-            allAnts.ForEach(a => GetCell(a.X, a.Y).Ant = a);
+            
+            newAnts.ForEach(a => GetCell(a.X, a.Y).Ant = a);
 
             // Collect food
-            allAnts.Where(a => GetCell(a.X, a.Y).Type == CellType.Food).ForEach(a =>
+            newAnts.Where(a => GetCell(a.X, a.Y).Type == CellType.Food).ForEach(a =>
             {
                 game.CollectFood(a.Owner);
                 GetCell(a.X, a.Y).Type = CellType.Space;
             });
 
             // Check for win condition
-            var winningAnt = allAnts.FirstOrDefault(
+            var winningAnt = newAnts.FirstOrDefault(
                 a => GetCell(a.X, a.Y).Type == CellType.Hill && Hills[a.Owner].X != a.X && Hills[a.Owner].Y != a.Y);
             if (winningAnt != null)
             {
@@ -431,7 +493,14 @@ namespace AntAICompetition.Server
             return result;
         }
 
-
+        private void Kill(int antId)
+        {
+            var ant = Ants.FirstOrDefault(a => a.Id == antId);
+            if (ant != null)
+            {
+                Kill(ant);
+            }
+        }
         private void Kill(Ant ant)
         {
             GetCell(ant.X, ant.Y).Ant = null;

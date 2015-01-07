@@ -30,5 +30,32 @@ namespace AntAICompetition.Models
                 Math.Pow(Math.Min(this.Y - other.Y, minCombinedFromEdgeDistanceY), 2));
         }
 
+        public int MoveX(string direction)
+        {
+            if (direction == "left")
+            {
+                return X - 1;
+            }
+            if (direction == "right")
+            {
+                return X + 1;
+            }
+            return X;
+        }
+
+        public int MoveY(string direction)
+        {
+            if (direction == "up")
+            {
+                return Y - 1;
+            }
+            if (direction == "down")
+            {
+                return Y + 1;
+            }
+            return Y;
+
+        }
+
     }
 }
