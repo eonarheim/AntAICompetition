@@ -196,3 +196,7 @@ FakesAssemblies/
 
 #Mac Stuff
 .DS_Store
+PythonAgent/*.xml
+PythonAgent/*.iml
+PythonAgent/*.name
+PythonAgent/.idea*
