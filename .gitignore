@@ -200,3 +200,4 @@ PythonAgent/*.xml
 PythonAgent/*.iml
 PythonAgent/*.name
 PythonAgent/.idea*
+*.pyc
