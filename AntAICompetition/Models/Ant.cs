@@ -32,7 +32,7 @@ namespace AntAICompetition.Models
             if (dy > HALF_HEIGHT) {
                 dy = Game.DEFAULT_HEIGHT - dy;
             }
-            return Math.Sqrt(dx * dx + dy + dy);
+            return Math.Sqrt(dx * dx + dy * dy);
 
             //var minCombinedFromEdgeDistanceX = Math.Min(other.X - 0, Game.DEFAULT_WIDTH - 1 - other.X) + Math.Min(X - 0, Game.DEFAULT_WIDTH - 1 - X);
             //var minCombinedFromEdgeDistanceY = Math.Min(other.Y - 0, Game.DEFAULT_WIDTH - 1 - other.Y) + Math.Min(Y - 0, Game.DEFAULT_WIDTH - 1 - Y);
