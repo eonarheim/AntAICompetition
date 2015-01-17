@@ -37,6 +37,7 @@ namespace AntAICompetition.Server
                 return null;
             }
             var game = new Game();
+            game.Start();
             Games.Add(game.Id, game);
             return game;
         }
@@ -44,6 +45,7 @@ namespace AntAICompetition.Server
         public Game GetDemoGame()
         {
             var game = new Game();
+            game.Start();
             Games.Add(game.Id, game);
             return game;
         }

@@ -26,7 +26,7 @@ namespace AntAICompetition.Server
         public static readonly int DEFAULT_WIDTH = 30;
 
         private Timer _gameLoop;
-        private Board _board = new Board(DEFAULT_HEIGHT, DEFAULT_WIDTH);
+        private Board _board;
 
         public Board Board
         {
@@ -66,6 +66,7 @@ namespace AntAICompetition.Server
         private bool _demoAgentStarted = false;
 
         private bool _killed = false;
+        private int _gameStartDelay;
 
 
         // Public Properties
@@ -89,12 +90,7 @@ namespace AntAICompetition.Server
             _numPlayers = numPlayers;
             _turnLength = turnLength;
             _maxTurn = maxTurn;
-            System.Diagnostics.Debug.WriteLine("Starting game {0}...", _id);
-
-            _gameLoop = new Timer(Tick, this, gameStartDelay, _turnLength);
-            _lastTick = DateTime.Now;
-            _nextTick = _lastTick.AddMilliseconds(_turnLength + gameStartDelay);
-            Running = true;
+            _gameStartDelay = gameStartDelay;
         }
 
         #region Helpers
@@ -187,7 +183,12 @@ namespace AntAICompetition.Server
 
         public void Start()
         {
-
+            System.Diagnostics.Debug.WriteLine("Starting game {0}...", _id);
+            _board = new Board();
+            _gameLoop = new Timer(Tick, this, _gameStartDelay, _turnLength);
+            _lastTick = DateTime.Now;
+            _nextTick = _lastTick.AddMilliseconds(_turnLength + _gameStartDelay);
+            Running = true;
         }
 
         public void CollectFood(string player, int amount = 1)

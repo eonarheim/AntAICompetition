@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="AntTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="BoardTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AntAICompetition\AntAICompetition.csproj">

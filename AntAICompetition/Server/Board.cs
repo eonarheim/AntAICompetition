@@ -42,11 +42,51 @@ namespace AntAICompetition.Server
 
         public Dictionary<string, Hill> Hills = new Dictionary<string, Hill>();
 
-        public Board(int width, int height, int FogOfWarDistance = 10, string mapFile = "~/App_Data/default.map")
+        public Board(Map map)
+        {
+            Width = map.Width;
+            Height = map.Height;
+            FogOfWar = map.FogOfWar;
+            Cells = new Cell[Width * Height];
+            for (var i = 0; i < Cells.Length; i++)
+            {
+                Cells[i] = new Cell();
+            }
+            for (var i = 0; i < Width; i++)
+            {
+                for (var j = 0; j < Height; j++)
+                {
+
+                    GetCell(i, j).X = i;
+                    GetCell(i, j).Y = j;
+                }
+            }
+
+            if (map.SymmetricHills)
+            {
+                // todo hills need to be a member off of board not game :(
+            }
+
+            map.WallLocations.ForEach(w =>
+            {
+                GetCell(w.X, w.Y).Type = CellType.Wall;
+            });
+            if (map.SymmetricWalls)
+            {
+                map.WallLocations.ForEach(w =>
+                {
+                    GetCell(Width - w.X - 1, w.Y).Type = CellType.Wall;
+                    GetCell(w.X, Height - w.Y - 1).Type = CellType.Wall;
+                    GetCell(Width - w.X - 1, Height - w.Y - 1).Type = CellType.Wall;
+                });
+            }
+        }
+
+        public Board(string mapFile = "~/App_Data/default.map")
         {
             var mapString = System.IO.File.ReadAllText(HttpContext.Current.Server.MapPath(mapFile));
             var map = JsonConvert.DeserializeObject<Map>(mapString); // I love Json.net, James Newton-King you rock +20 gold stars
-
+            
             Width = map.Width;
             Height = map.Height;
             FogOfWar = map.FogOfWar;
@@ -150,8 +190,10 @@ namespace AntAICompetition.Server
 
             // if they are converse they have swapped
             return a1x == a2.X && a1y == a2.Y && a2x == a1.X && a2y == a1.Y;
-
         }
+
+        
+
         public void Update(Game game)
         {
             // Get new player updates
@@ -159,10 +201,7 @@ namespace AntAICompetition.Server
             
             var updateRequests = updates.SelectMany(u => u.MoveAntRequests).ToList();
 
-           
 
-            // move and evaluate
-            updateRequests.ForEach(u => UpdateAnt(game, u.AntId, u.Direction));
             // detect ant swaps
             // ants that are moving in opposite directions that are 1 unit away are swapping :)
             var swappedAntIds = new List<int>();
@@ -171,15 +210,17 @@ namespace AntAICompetition.Server
                 var swaps = updateRequests.Where(u => u != update && WillSwap(u, update)).Select(u => u.AntId).ToList();
                 swappedAntIds.AddRange(swaps);
             }
+
+            // move and evaluate
+            updateRequests.ForEach(u => UpdateAnt(game, u.AntId, u.Direction));
+           
             updateRequests.ForEach(u => EvaluateAnts(game));
 
             // kill swaps
             swappedAntIds.ForEach(Kill);
             
-            
+            // Spawn food
             SpawnFood();
-            
-
 
             // Clear updates
             _updateList.Clear();
