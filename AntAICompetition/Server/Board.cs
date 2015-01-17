@@ -267,6 +267,7 @@ namespace AntAICompetition.Server
 
         private void UpdateAnt(Game game, int antId, string direction)
         {
+            direction = direction.ToLower();
             var ant = Ants.FirstOrDefault(a => a.Id == antId);
             if (ant != null)
             {
