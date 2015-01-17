@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{304BBC
 EndProject
 Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "NodeAgent", "NodeAgent\NodeAgent.njsproj", "{CAD8E920-A773-4020-9496-AFF56D9C2A7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntAICompetition.Tests", "AntAICompetition.Tests\AntAICompetition.Tests.csproj", "{3500A2A6-D308-4ADA-B678-FCDF546FB1CC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{CAD8E920-A773-4020-9496-AFF56D9C2A7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CAD8E920-A773-4020-9496-AFF56D9C2A7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CAD8E920-A773-4020-9496-AFF56D9C2A7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3500A2A6-D308-4ADA-B678-FCDF546FB1CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3500A2A6-D308-4ADA-B678-FCDF546FB1CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3500A2A6-D308-4ADA-B678-FCDF546FB1CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3500A2A6-D308-4ADA-B678-FCDF546FB1CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
