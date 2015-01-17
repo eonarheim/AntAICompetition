@@ -83,7 +83,9 @@ namespace AntAICompetition.Controllers
                 GameId = id,
                 FogOfWar = game.Board.FogOfWar,
                 MillisecondsUntilNextTurn = game.TimeToNextTurn,
-                Turn = game.Turn
+                Turn = game.Turn,
+                Width = game.Board.Width,
+                Height = game.Board.Height
             };
         }
 

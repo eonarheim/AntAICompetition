@@ -36,7 +36,7 @@ class AgentBase:
 
         return GameStatus(data['IsGameOver'], data['Status'], data['GameId'], data['Turn'], data['TotalFood'],
                           self.__parse_hill(data['Hill']), data['FogOfWar'], data['MillisecondsUntilNextTurn'],
-                          friendly_ants, enemy_ants, enemy_hills, visible_food, data['Walls'])
+                          friendly_ants, enemy_ants, enemy_hills, visible_food, data['Walls'], data['Width'], data['Height'])
 
     def move_ant(self, ant, direction):
         duplicate_request = reduce(lambda prev, nxt: prev and nxt.ant_id == ant.id, self.__pending_move_requests, False)
@@ -137,7 +137,7 @@ class Food:
 
 class GameStatus:
     def __init__(self, is_game_over, status, game_id, turn, total_food, hill, fog_of_war, milliseconds_until_next_turn,
-                 friendly_ants, enemy_ants, enemy_hills, visible_food, walls):
+                 friendly_ants, enemy_ants, enemy_hills, visible_food, walls, width, height):
         self.is_game_over = is_game_over
         self.status = status
         self.game_id = game_id
@@ -151,6 +151,8 @@ class GameStatus:
         self.enemy_hills = enemy_hills
         self.visible_food = visible_food
         self.walls = walls
+        self.width = width
+        self.height = height
 
 #agent = AgentBase("Python Agent", "http://antsgame.azurewebsites.net")
 #agent.start()

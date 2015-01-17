@@ -10,7 +10,7 @@ class SampleAgent(AgentBase.AgentBase):
         for ant in game_status.friendly_ants:
             self.move_ant(ant.id, 'up') #this is a terrible strategy by the way
 
-agent = SampleAgent("Sample Python Agent", "http://antsgame.azurewebsites.net")
+agent = SampleAgent("Sample Python Agent", "http://localhost:16901")
 agent.start()
 
 
