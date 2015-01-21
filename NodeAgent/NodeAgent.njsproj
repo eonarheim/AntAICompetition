@@ -32,7 +32,9 @@
   <ItemGroup>
     <Compile Include="agentengine.js" />
     <Compile Include="app.js" />
+    <Compile Include="gulpfile.js" />
     <Compile Include="promise.js" />
+    <Content Include=".jshintrc" />
     <Content Include="package.json" />
     <Content Include="README.md" />
   </ItemGroup>
