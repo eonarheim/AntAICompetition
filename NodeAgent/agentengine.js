@@ -8,7 +8,7 @@ var AgentEngine = function (main, name, endpoint) {
     this.name = name || "Node Agent";
     this.endpoint = endpoint || "http://antsgame.azurewebsites.net";
     
-    if (!main) throw new Error("Must implemenat a mainloop callback for Agent Engine");
+    if (!main) throw new Error("Must implement a mainloop callback for Agent Engine");
     this.main = main;
 
     this.running = false;
@@ -40,6 +40,7 @@ AgentEngine.prototype.logon = function (gameId) {
         var data = JSON.parse(data);
         agent.gameId = data.GameId;
         agent.authToken = data.AuthToken;
+        console.log("Your game Id is " + data.GameId);
         promise.resolve();
     });
     return promise;
