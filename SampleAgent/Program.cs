@@ -12,7 +12,7 @@ namespace SampleAgent
         {
             try
             {
-                var agent = new Agent("Sample Agent");
+                var agent = new Agent("TechnoTim");
                 agent.Start().Wait();
             }
             catch (Exception e)

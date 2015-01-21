@@ -39,6 +39,7 @@ namespace SampleAgent
             var result = await response.Content.ReadAsAsync<LogonResult>();
             AuthToken = result.AuthToken;
             GameId = result.GameId;
+            Console.WriteLine("Your game Id is " + result.GameId);
             return result;
         }
 
