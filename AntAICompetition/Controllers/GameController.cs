@@ -116,7 +116,14 @@ namespace AntAICompetition.Controllers
         {
             if (IsValidUpdateRequest(updateRequest))
             {
-                return _gameManager.GetGame(updateRequest.GameId).UpdatePlayer(updateRequest);
+                try
+                {
+                    return _gameManager.GetGame(updateRequest.GameId).UpdatePlayer(updateRequest);
+                }
+                catch (Exception e)
+                {
+                    return new UpdateResult() {ErrorList = new List<string>() {"Error updating game" + e.Message}};
+                }
             }
             return null;
         }
@@ -134,10 +141,20 @@ namespace AntAICompetition.Controllers
         {
             if(updateRequest != null && updateRequest.MoveAntRequests != null && !string.IsNullOrWhiteSpace(updateRequest.AuthToken))
             {
-                if (updateRequest.MoveAntRequests.Any(ma => ma.Direction == "up" || ma.Direction == "down" || ma.Direction == "left" || ma.Direction == "right"))
+                var valid = true;
+                foreach (var moveRequest in updateRequest.MoveAntRequests)
                 {
-                    return true;
+                    if (moveRequest.Direction != null && 
+                        (moveRequest.Direction.Equals("up", StringComparison.InvariantCultureIgnoreCase) ||
+                        moveRequest.Direction.Equals("down", StringComparison.InvariantCultureIgnoreCase) ||
+                        moveRequest.Direction.Equals("left", StringComparison.InvariantCultureIgnoreCase) ||
+                        moveRequest.Direction.Equals("right", StringComparison.InvariantCultureIgnoreCase)))
+                    {
+                        continue;
+                    }
+                    valid = false;
                 }
+                return valid;
             }
             return false;
         }
