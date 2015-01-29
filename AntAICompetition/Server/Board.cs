@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AntAICompetition.Models;
+using Microsoft.Ajax.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using WebGrease.Css.Extensions;
@@ -308,6 +309,11 @@ namespace AntAICompetition.Server
 
         private void UpdateAnt(Game game, int antId, string direction)
         {
+            // break and do nothing, if there is a bad direction
+            if (direction == null)
+            {
+                return;
+            }
             direction = direction.ToLower();
             var ant = Ants.FirstOrDefault(a => a.Id == antId);
             if (ant != null)

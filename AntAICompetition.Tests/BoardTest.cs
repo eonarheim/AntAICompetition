@@ -159,5 +159,31 @@ namespace AntAICompetition.Tests
         }
 
 
+        [TestMethod]
+        public void TestSendingBadDirection()
+        {
+            var game = new Game();
+            var board = new Board(new Map() { FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>() });
+            board.GetCell(2, 0).Ant = new Ant() { Id = 1, Owner = "player1", X = 2, Y = 0 };
+
+            board.QueueUpdateForPlayer("player1",
+                new UpdateRequest()
+                {
+                    MoveAntRequests = new List<MoveAntRequest>()
+                    {
+                        new MoveAntRequest() { AntId = 1 }
+                    }
+                });
+
+            board.Update(game);
+
+            // There should be no ants on the board
+            Assert.AreEqual(1, board.Ants.Count);
+            // Should not have moved
+            Assert.AreEqual(2, board.GetCell(2,0).Ant.X);
+            Assert.AreEqual(0, board.GetCell(2, 0).Ant.Y);
+        }
+
+
     }
 }
