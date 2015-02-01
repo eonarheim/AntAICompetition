@@ -266,7 +266,7 @@ namespace AntAICompetition.Server
                 var x1 = rng.Next(0, midWidth);
                 var y1 = rng.Next(0, midHeight);
                 var potentialCell = GetCell(x1, y1);
-                if (potentialCell.Type != CellType.Wall)
+                if (potentialCell.Type != CellType.Wall || potentialCell.Ant != null)
                 {
                     GetCell(x1, y1).Type = CellType.Food;
                 }
@@ -277,7 +277,7 @@ namespace AntAICompetition.Server
                 var x2 = rng.Next(midWidth, Width);
                 var y2 = rng.Next(0, midHeight);
                 var potentialCell = GetCell(x2, y2);
-                if (potentialCell.Type != CellType.Wall)
+                if (potentialCell.Type != CellType.Wall || potentialCell.Ant != null)
                 {
                     GetCell(x2, y2).Type = CellType.Food;
                 }
@@ -288,7 +288,7 @@ namespace AntAICompetition.Server
                 var x3 = rng.Next(0, midWidth);
                 var y3 = rng.Next(midHeight, Height);
                 var potentialCell = GetCell(x3, y3);
-                if (potentialCell.Type != CellType.Wall)
+                if (potentialCell.Type != CellType.Wall || potentialCell.Ant != null)
                 {
                     GetCell(x3, y3).Type = CellType.Food;
                 }
@@ -300,7 +300,7 @@ namespace AntAICompetition.Server
                 var x4 = rng.Next(midWidth, Width);
                 var y4 = rng.Next(midHeight, Height);
                 var potentialCell = GetCell(x4, y4);
-                if (potentialCell.Type != CellType.Wall)
+                if (potentialCell.Type != CellType.Wall || potentialCell.Ant != null)
                 {
                     GetCell(x4, y4).Type = CellType.Food;
                 }
