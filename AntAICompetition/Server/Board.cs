@@ -212,13 +212,13 @@ namespace AntAICompetition.Server
                 swappedAntIds.AddRange(swaps);
             }
 
+            // kill swaps
+            swappedAntIds.ForEach(Kill);
+
             // move and evaluate
             updateRequests.ForEach(u => UpdateAnt(game, u.AntId, u.Direction));
            
             updateRequests.ForEach(u => EvaluateAnts(game));
-
-            // kill swaps
-            swappedAntIds.ForEach(Kill);
             
             // Spawn food
             SpawnFood();
@@ -257,7 +257,14 @@ namespace AntAICompetition.Server
 
         public void SpawnFood()
         {
-            var rng = new Random(DateTime.Now.Millisecond);
+            int seed = DateTime.Now.Millisecond;
+            SpawnFood(seed);
+        }
+
+        // Added so we can unit test this.  Always call SpawnFood() instead.
+        public void SpawnFood(int seed)
+        {
+            var rng = new Random(seed);
             var midWidth = Width / 2;
             var midHeight = Height / 2;
 
@@ -266,7 +273,7 @@ namespace AntAICompetition.Server
                 var x1 = rng.Next(0, midWidth);
                 var y1 = rng.Next(0, midHeight);
                 var potentialCell = GetCell(x1, y1);
-                if (potentialCell.Type != CellType.Wall && potentialCell.Type != CellType.Hill && potentialCell.Ant == null)
+                if (potentialCell.Type != CellType.Food && potentialCell.Type != CellType.Wall && potentialCell.Type != CellType.Hill && potentialCell.Ant == null)
                 {
                     GetCell(x1, y1).Type = CellType.Food;
                 }
@@ -277,7 +284,7 @@ namespace AntAICompetition.Server
                 var x2 = rng.Next(midWidth, Width);
                 var y2 = rng.Next(0, midHeight);
                 var potentialCell = GetCell(x2, y2);
-                if (potentialCell.Type != CellType.Wall && potentialCell.Type != CellType.Hill && potentialCell.Ant == null)
+                if (potentialCell.Type != CellType.Food && potentialCell.Type != CellType.Wall && potentialCell.Type != CellType.Hill && potentialCell.Ant == null)
                 {
                     GetCell(x2, y2).Type = CellType.Food;
                 }
@@ -288,7 +295,7 @@ namespace AntAICompetition.Server
                 var x3 = rng.Next(0, midWidth);
                 var y3 = rng.Next(midHeight, Height);
                 var potentialCell = GetCell(x3, y3);
-                if (potentialCell.Type != CellType.Wall && potentialCell.Type != CellType.Hill && potentialCell.Ant == null)
+                if (potentialCell.Type != CellType.Food && potentialCell.Type != CellType.Wall && potentialCell.Type != CellType.Hill && potentialCell.Ant == null)
                 {
                     GetCell(x3, y3).Type = CellType.Food;
                 }
@@ -300,7 +307,7 @@ namespace AntAICompetition.Server
                 var x4 = rng.Next(midWidth, Width);
                 var y4 = rng.Next(midHeight, Height);
                 var potentialCell = GetCell(x4, y4);
-                if (potentialCell.Type != CellType.Wall && potentialCell.Type != CellType.Hill && potentialCell.Ant == null)
+                if (potentialCell.Type != CellType.Food && potentialCell.Type != CellType.Wall && potentialCell.Type != CellType.Hill && potentialCell.Ant == null)
                 {
                     GetCell(x4, y4).Type = CellType.Food;
                 }
