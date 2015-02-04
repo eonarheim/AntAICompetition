@@ -39,7 +39,7 @@ namespace AntAICompetition.Tests
             var game = new Game();
             var board = new Board(new Map() { FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>() });
             board.GetCell(0, 0).Ant = new Ant() { Id = 1, Owner = "player1", X = 0, Y = 0 };
-            board.GetCell(1, 0).Ant = new Ant() { Id = 2, Owner = "player2", X = 0, Y = 1 };
+            board.GetCell(0, 1).Ant = new Ant() { Id = 2, Owner = "player2", X = 0, Y = 1 };
 
             board.QueueUpdateForPlayer("player1",
                 new UpdateRequest()
@@ -63,7 +63,7 @@ namespace AntAICompetition.Tests
             var game = new Game();
             var board = new Board(new Map() { FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>() });
             board.GetCell(0, 0).Ant = new Ant() { Id = 1, Owner = "player1", X = 0, Y = 0 };
-            board.GetCell(1, 0).Ant = new Ant() { Id = 2, Owner = "player2", X = 2, Y = 0 };
+            board.GetCell(2, 0).Ant = new Ant() { Id = 2, Owner = "player2", X = 2, Y = 0 };
 
             board.QueueUpdateForPlayer("player1",
                 new UpdateRequest()
@@ -129,7 +129,6 @@ namespace AntAICompetition.Tests
             Assert.AreEqual(2, board.Ants.Count);
         }
 
-
         [TestMethod]
         public void TestMoreThan2Die()
         {
@@ -158,7 +157,6 @@ namespace AntAICompetition.Tests
             Assert.AreEqual(0, board.Ants.Count);
         }
 
-
         [TestMethod]
         public void TestSendingBadDirection()
         {
@@ -184,6 +182,69 @@ namespace AntAICompetition.Tests
             Assert.AreEqual(0, board.GetCell(2, 0).Ant.Y);
         }
 
+        [TestMethod]
+        public void TestSendingInvalidDirection()
+        {
+            var game = new Game();
+            var board = new Board(new Map() { FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>() });
+            board.GetCell(7, 7).Ant = new Ant() { Id = 1, Owner = "player1", X = 7, Y = 7 };
+
+            board.QueueUpdateForPlayer("player1",
+                new UpdateRequest()
+                {
+                    MoveAntRequests = new List<MoveAntRequest>()
+                    {
+                        new MoveAntRequest() { AntId = 1, Direction = "bogus_string" }
+                    }
+                });
+
+            board.Update(game);
+
+            // There should be 1 ant on the board
+            Assert.AreEqual(1, board.Ants.Count);
+
+            // It should still be at position 7, 7
+            Assert.AreEqual(7, board.Ants[0].X);
+            Assert.AreEqual(7, board.Ants[0].Y);
+
+        }
+
+        [TestMethod]
+        public void TestNo1for2LineOfAnts()
+        {
+            // We have a line of ants: XOO
+            // X moves right, and both Os move left.
+            // Just the ants that swap should die first, instead of X being able to kill 2 ants in one move
+
+            var game = new Game();
+            var board = new Board(new Map() { FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>() });
+            board.GetCell(0, 0).Ant = new Ant() { Id = 1, Owner = "player1", X = 0, Y = 0 };
+            board.GetCell(1, 0).Ant = new Ant() { Id = 2, Owner = "player2", X = 1, Y = 0 };
+            board.GetCell(2, 0).Ant = new Ant() { Id = 3, Owner = "player2", X = 2, Y = 0 };
+
+            board.QueueUpdateForPlayer("player1",
+                new UpdateRequest()
+                {
+                    MoveAntRequests = new List<MoveAntRequest>()
+                    {
+                        new MoveAntRequest() { AntId = 1, Direction = "right" }
+                    }
+                });
+            board.QueueUpdateForPlayer("player2",
+                new UpdateRequest()
+                {
+                    MoveAntRequests = new List<MoveAntRequest>()
+                    {
+                        new MoveAntRequest() { AntId = 2, Direction = "left" },
+                        new MoveAntRequest() { AntId = 3, Direction = "left" }
+                    }
+                });
+
+            board.Update(game);
+
+            // There should be 1 ant on the board
+            Assert.AreEqual(1, board.Ants.Count);
+        }
 
     }
 }

@@ -212,13 +212,13 @@ namespace AntAICompetition.Server
                 swappedAntIds.AddRange(swaps);
             }
 
+            // kill swaps
+            swappedAntIds.ForEach(Kill);
+
             // move and evaluate
             updateRequests.ForEach(u => UpdateAnt(game, u.AntId, u.Direction));
            
             updateRequests.ForEach(u => EvaluateAnts(game));
-
-            // kill swaps
-            swappedAntIds.ForEach(Kill);
             
             // Spawn food
             SpawnFood();
