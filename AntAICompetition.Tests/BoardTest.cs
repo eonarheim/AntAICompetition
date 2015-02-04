@@ -13,11 +13,11 @@ namespace AntAICompetition.Tests
         public void TestEnemyAntsDieOnHorizontalSwap()
         {
             var game = new Game();
-            var board = new Board(new Map(){FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>()});
+            var board = new Board(new Map() { FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>() });
             board.GetCell(0, 0).Ant = new Ant() { Id = 1, Owner = "player1", X = 0, Y = 0 };
             board.GetCell(1, 0).Ant = new Ant() { Id = 2, Owner = "player2", X = 1, Y = 0 };
 
-            board.QueueUpdateForPlayer("player1", 
+            board.QueueUpdateForPlayer("player1",
                 new UpdateRequest()
                 {
                     MoveAntRequests = new List<MoveAntRequest>() { new MoveAntRequest() { AntId = 1, Direction = "right" } }
@@ -150,7 +150,7 @@ namespace AntAICompetition.Tests
                         new MoveAntRequest() { AntId = 4, Direction = "up" }
                     }
                 });
-          
+
             board.Update(game);
 
             // There should be no ants on the board
@@ -178,7 +178,7 @@ namespace AntAICompetition.Tests
             // There should be no ants on the board
             Assert.AreEqual(1, board.Ants.Count);
             // Should not have moved
-            Assert.AreEqual(2, board.GetCell(2,0).Ant.X);
+            Assert.AreEqual(2, board.GetCell(2, 0).Ant.X);
             Assert.AreEqual(0, board.GetCell(2, 0).Ant.Y);
         }
 
@@ -244,6 +244,48 @@ namespace AntAICompetition.Tests
 
             // There should be 1 ant on the board
             Assert.AreEqual(1, board.Ants.Count);
+        }
+
+        [TestMethod]
+        public void TestNoFoodOnFood()
+        {
+            var game = new Game();
+            var board = new Board(new Map() { FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>() });
+
+            board.GetCell(3, 3).Ant = new Ant() { Id = 1, Owner = "player1", X = 3, Y = 3 };
+            board.GetCell(1, 7).Type = CellType.Food;
+
+            // A seed of 1 spawns food at 1,7 and 20,29
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+
+            // We are only withing range of the food at 1,7 so we should only have a count of 1 food.
+            Assert.AreEqual(1, board.GetVisibleFood("player1").Count);
+        }
+
+        [TestMethod]
+        public void TestNoFoodOnHill()
+        {
+            var game = new Game();
+            var board = new Board(new Map() { FogOfWar = 10, Height = 30, Width = 30, HillLocations = new List<Hill>(), WallLocations = new List<Cell>() });
+
+            board.BuildHill(1, 7, "player1");
+            board.GetCell(3, 3).Ant = new Ant() { Id = 1, Owner = "player1", X = 3, Y = 3 };
+
+            // A seed of 1 spawns food at 1,7 and 20,29
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+            board.SpawnFood(1);
+
+            // We are only withing range of the food/hill at 1,7 so we shouldn't see any food
+            Assert.AreEqual(0, board.GetVisibleFood("player1").Count);
         }
 
     }
