@@ -292,10 +292,11 @@ namespace AntAICompetition.Server
         public void Tick(object stateInfo)
         {
             if (this._killed) return;
-            _turn++;
-            if (_turn >= this._maxTurn)
+            int tempTurn = _turn + 1;
+            if (tempTurn >= this._maxTurn)
             {
                 this.Status = "Max Turn limit reached, ties broken by most ants";
+                _turn = tempTurn;
                 this.Stop();
                 return;
             }
@@ -305,7 +306,7 @@ namespace AntAICompetition.Server
             _players.ForEach(p => _playersUpdatedThisTurn[p] = false);
 
             System.Diagnostics.Debug.WriteLine("[{0}] Game {3} - Tick turn {1} time to next turn {2}", DateTime.Now,
-                _turn, _nextTick, Id);
+                tempTurn, _nextTick, Id);
             _board.Update(this);
             foreach (var player in _players)
             {
@@ -320,6 +321,7 @@ namespace AntAICompetition.Server
                     Lose(player);
                 }
             }
+            _turn = tempTurn;
             ClientManager.UpdateClientGame(this);
         }
 
