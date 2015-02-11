@@ -8,6 +8,8 @@ namespace AntAICompetition.Server
 {
     public class GameManager
     {
+        private int _currentTourneyId = -1;
+
         private GameManager()
         {
             Games = new Dictionary<int, Game>();
@@ -23,6 +25,23 @@ namespace AntAICompetition.Server
             {
                 Games[id].Stop();
                 Games.Remove(id);
+            }
+        }
+
+        public Game GetTourneyGame()
+        {
+            // only works for two player games
+            if (_currentTourneyId == -1 || (Games[_currentTourneyId].Players.Count%2 == 0))
+            {
+                var game = new Game(gameStartDelay: 20000);
+                game.Start();
+                _currentTourneyId = game.Id;
+                Games.Add(game.Id, game);
+                return game;
+            }
+            else
+            {
+                return Games[_currentTourneyId];
             }
         }
 

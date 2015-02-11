@@ -51,10 +51,15 @@ namespace AntAICompetition.Controllers
                 }
                 else
                 {
+                    var game = _gameManager.GetTourneyGame();
+                    return game.LogonPlayer(logon.AgentName);
+
+                    // This logs on the demo agent
+                    /*
                     var game = _gameManager.GetDemoGame();
                     game.LogonDemoAgent();
 
-                    return game.LogonPlayer(logon.AgentName);
+                    return game.LogonPlayer(logon.AgentName);*/
                 }
             }
             return null;
